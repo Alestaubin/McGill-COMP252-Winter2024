@@ -9,6 +9,7 @@
 \usepackage{titling}
 \usepackage{thmtools}
 \usepackage{mathptmx} %font
+\usepackage{verbatim} % for comments
 
 %\usepackage{algpseudocode} % for algorithm pseudo code
 %\usepackage{algorithm}
@@ -158,6 +159,8 @@ $$T_n = O(\underbrace{\log_2 n}_{\text{\# of iterations}} \times \underbrace{(\l
 \newpage 
 \item[\it Exercise 3] Assuming a \textsc{ram} (uniform cost) model of computation, design a recursive divide-and-conquer style $O(n)$ worst-case time algorithm for the following problem. We are given an array $x[1],... , x[n]$ of (possibly negative) integers, and are asked to find two indices $i \leq j$ such that $ x[i] +...+ x[j]$ is maximal. Prove your claim.
 \sol 
+
+\begin{comment}
 \IncMargin{1em}
 \begin{algorithm}
 
@@ -193,6 +196,37 @@ $last \leftarrow 0$\\
 
 
 To justify that this algorithm has a worst-case time complexity $O(n)$, one only needs to observe that in any case, the array will be traversed exactly once, performing a constant number of operations at each index.
+\end{comment}
+
+
+
+\IncMargin{1em}
+\begin{algorithm}
+
+\SetKwArray{pre}{prefix}
+\SetKwArray{suf}{suffix}
+\SetKwArray{arr}{arr}
+\SetKwFunction{maxsubarray}{maxSubArray}
+\caption{Maximum Subarray recursive, divide-and-conquer algorithm. }\label{algo_disjdecomp}
+\Input{An array of integers \arr.}
+\Output{Two integers, $first, \; last$, representing the first and last index of the maximal subarray.}
+\pre, \suf $\leftarrow \arr;$ \\  
+\For{$i \leftarrow 1$ \KwTo $\text{length(\arr)}-1$}{
+            \pre[i] += $\max(0, \text{\pre}[i-1])$\;
+        }
+\For{$i \leftarrow \text{length(\arr)}-2$ \KwTo $-1$}{
+            \suf[i] += $\max(0, \text{\suf}[i+1])$\;
+        }
+  \Return \maxsubarray (\arr, 0, length(\arr));\\
+  \Fn{\maxsubarray(array, left, right)}{
+  \If{left = right}{
+  \Return array[left];
+  }
+  mid $\leftarrow \lfloor (left + right)/2 \rfloor$;\\
+  \Return \max( \maxsubarray(array, left, mid), \maxsubarray(array, mid+1, right), \pre[mid] + \suf[mid+1] );
+  }
+\end{algorithm}
+\DecMargin{1em}
 
 \end{enumerate}
 \end{document}

@@ -184,8 +184,12 @@ The function \textsc{maxSubArray} is a divide-and-conquer algorithm that divides
   \item[\it (ii)] The subarray is entirely contained in the \textbf{right} part of the parent array that was divided in 2;
   \item[\it (iii)] The subarray is \textbf{split} between the two arrays on the left and the right. This is where the  \textsc{prefixTupleArray} and \textsc{suffixTupleArray} will be used. 
 \end{enumerate}
-The recurrence of the function described above can be described as 
-$$T_n = 2T_{n/2} $$
+The recurrence of the function described above is given by 
+$$T_n = 2T_{n/2} + O(1). $$
+We shall use the Master Theorem to compute its complexity. We notice that 
+$$n^{\log_b (a)} / f(n) = n^{\log_2(2)}/1 = n, $$
+and if we let $\varepsilon = 1/2$, then for any $n > 1$, we have $n > n^\varepsilon = \sqrt{n} {}$. Thus the first case of the theorem applies, and we conclude that
+$$T_n = O(n^{\log_b (a)}) = O(n) .$$
 
 \end{enumerate}
 \end{document}

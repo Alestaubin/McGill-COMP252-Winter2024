@@ -80,47 +80,6 @@
   $$O(1) $$
   Case (2): 
 
-\begin{algorithm}
-  \caption{Fibonacci Modulo N}\label{algo:fibonacci_modulo_n}
-\SetKwFunction{Fib}{fib}
-\SetKwFunction{Multiply}{multiply}
-\SetKwFunction{Power}{power}
-
-\KwSty{Function \Fib{$(n)$}:}{\\
-    $F \leftarrow [[1,1],[1,0]]$\;
-    \If{$n == 0$}{
-        \KwRet $0$\;
-    }
-    \Power{$(F, n - 1)$}\;
-    \KwRet $F[0][0]$\;
-}
-\BlankLine
-\KwSty{Function \Multiply{$(F, M)$}:}{\\
-    $x \leftarrow F[0][0] \cdot M[0][0] + F[0][1] \cdot M[1][0]$\;
-    $y \leftarrow F[0][0] \cdot M[0][1] + F[0][1] \cdot M[1][1]$\;
-    $z \leftarrow F[1][0] \cdot M[0][0] + F[1][1] \cdot M[1][0]$\;
-    $w \leftarrow F[1][0] \cdot M[0][1] + F[1][1] \cdot M[1][1]$\;
-    
-    $F[0][0] \leftarrow x$\;
-    $F[0][1] \leftarrow y$\;
-    $F[1][0] \leftarrow z$\;
-    $F[1][1] \leftarrow w$\;
-}
-\BlankLine
-
-\KwSty{Function \Power{$(F, n)$}:}{\\
-    \If{$n == 0$ or $n == 1$}{
-        \KwRet\;
-    }
-    $M \leftarrow [[1,1],[1,0]]$\;
-    \Power{$(F, n // 2)$}\;
-    \Multiply{$(F, F)$}\;
-    \If{$n$ is odd}{
-        \Multiply{$(F, M)$}\;
-    }
-}
-\end{algorithm}
-
 \newpage
 \item[\it Exercise 2] In the bit model of computation, give an efficient algorithm for determining whether a given integer $n$ is a perfect square, and determine its worst-case complexity in big oh notation as a function of $n$.
 \sol  
@@ -155,7 +114,7 @@ $right \leftarrow n$ \\
 
 We now determine the above algorithm's worst case time complexity in the bit model, denoting it $T_n$. In the worst case, line \textbf{3} will run $\log_2 n$ times, let $i$ be the iteration number. We safely estimate that in the worst case, at iteration $i,$ we have, $$|mid|= \lfloor \log_2 n \rfloor + 1$$ 
 where $|\cdot |$ denotes the bit length of an integer. Now, we don't need to worry about the additions in each iteration, as they take linear time and are dwarfed by the multiplications/divisions, which take quadratic time. Hence, we conclude that the worst case time complexity in the bit model for this algorithm is 
-$$T_n = O(\underbrace{\log_2 n}_{\text{\# of iterations}} \times \underbrace{(\log_2 n)^2}_{\text{multiplication}}) = O((\log_2 n )^3) $$
+$$T_n = O(\underbrace{\log_2 n}_{\text{\# of iterations}} \times \underbrace{(\log_2 n)^2}_{\text{multiplication}}) = O((\log n )^3) $$
 \newpage 
 \item[\it Exercise 3] Assuming a \textsc{ram} (uniform cost) model of computation, design a recursive divide-and-conquer style $O(n)$ worst-case time algorithm for the following problem. We are given an array $x[1],... , x[n]$ of (possibly negative) integers, and are asked to find two indices $i \leq j$ such that $ x[i] +...+ x[j]$ is maximal. Prove your claim.
 \sol 
@@ -203,30 +162,47 @@ To justify that this algorithm has a worst-case time complexity $O(n)$, one only
 \IncMargin{1em}
 \begin{algorithm}
 
-\SetKwArray{pre}{prefix}
-\SetKwArray{suf}{suffix}
+\SetKwArray{pre}{prefixTupleArray}
+\SetKwArray{suf}{suffixTupleArray}
 \SetKwArray{arr}{arr}
 \SetKwFunction{maxsubarray}{maxSubArray}
 \caption{Maximum Subarray recursive, divide-and-conquer algorithm. }\label{algo_disjdecomp}
 \Input{An array of integers \arr.}
 \Output{Two integers, $first, \; last$, representing the first and last index of the maximal subarray.}
-\pre, \suf $\leftarrow \arr;$ \\  
+  \pre, \suf $\leftarrow \arr;$  \\  
+\tcp{\pre and \suf are arrays of tuples, \pre[i][0] contains \arr[i]}
 \For{$i \leftarrow 1$ \KwTo $\text{length(\arr)}-1$}{
-            \pre[i] += $\max(0, \text{\pre}[i-1])$\;
+            \pre[i][0] += $\max(0, \text{\pre}[i-1])$;\\ 
+            \eIf{\text{\pre}$[i-1]\geq 0$ }{
+              \pre[i][1]$\leftarrow \pre[i-1][1]$;
+            }{
+            \pre[i][1] $\leftarrow i$;
+            }
         }
+
 \For{$i \leftarrow \text{length(\arr)}-2$ \KwTo $-1$}{
-            \suf[i] += $\max(0, \text{\suf}[i+1])$\;
+            \suf[i][0] += $\max(0, \text{\suf}[i+1])$\;
+            \eIf{\text{\suf}$[i+1]\geq 0$ }{
+              \suf[i][1] $\leftarrow \suf[i+1][1]$;
+            }{
+            \suf[i][1] $\leftarrow i$;
+            }
         }
+        \tcp{\pre[i][1] will hold the beginning index of the max subarray ending at i and \suf[i][1] the ending index of the max subarray starting at i. }
   \Return \maxsubarray (\arr, 0, length(\arr));\\
   \Fn{\maxsubarray(array, left, right)}{
   \If{left = right}{
-  \Return array[left];
+  \Return (array[left], (left, left)); \tcp{return a tuple}
   }
-  mid $\leftarrow \lfloor (left + right)/2 \rfloor$;\\
-  \Return \max( \maxsubarray(array, left, mid), \maxsubarray(array, mid+1, right), \pre[mid] + \suf[mid+1] );
+  $mid\leftarrow \lfloor (left + right)/2 \rfloor$;\\
+  $ l \leftarrow \maxsubarray(array, left, mid)$;\\
+  $r \leftarrow \maxsubarray(array, mid+1, right);$\\ 
+  $ a \leftarrow (\pre[mid][0] + \suf[mid+1][0], (\pre[mid][1], \suf[mid+1][1]) ) $; \\   
+  \Return 
   }
 \end{algorithm}
 \DecMargin{1em}
-
+In the above algorithm, index $i$ of the prefix array will contain the maximal sum of a subarray ending at $i$, while that of the suffix array will contain the maximal sum of a subarray starting at $i$. The complexity for the computation of prefix is always $O(n)$, as we must loop through each element of the array, similarly for suffix. As for the function \textsc{MaxSubarray}, its recurrence is given by
+$$T_n = 2T_{n/2} $$
 \end{enumerate}
 \end{document}

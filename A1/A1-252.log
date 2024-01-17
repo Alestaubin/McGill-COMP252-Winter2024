@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.9.2)  16 JAN 2024 17:37
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.9.2)  16 JAN 2024 23:27
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -529,6 +529,9 @@ File: l3backend-pdftex.def 2023-01-16 L3 backend support: PDF output (pdfTeX)
 
 LaTeX Warning: Label `algo_disjdecomp' multiply defined.
 
+
+LaTeX Warning: Label `algo_disjdecomp' multiply defined.
+
 )
 \openout1 = `A1-252.aux'.
 
@@ -635,74 +638,36 @@ Underfull \hbox (badness 10000) in paragraph at lines 63--66
 
 [1
 
-{/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc}] [2]
-Underfull \hbox (badness 10000) in paragraph at lines 125--154
+{/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc}]
+Underfull \hbox (badness 10000) in paragraph at lines 84--113
 
  []
 
-[3]
-Underfull \hbox (badness 10000) in paragraph at lines 160--162
+[2]
+Underfull \hbox (badness 10000) in paragraph at lines 119--121
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 160--162
+Underfull \hbox (badness 10000) in paragraph at lines 119--121
 
  []
 
-./A1-252.tex:228: Missing $ inserted.
-<inserted text> 
-                $
-l.228 \end
-          {algorithm}
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-./A1-252.tex:228: Extra }, or forgotten $.
-\algocf@Vline ... }\vtop {\algocf@addskiptotal #1}
-                                                  \Hlne }}\vskip \skiphlne \...
-l.228 \end
-          {algorithm}
-I've deleted a group-closing symbol because it seems to be
-spurious, as in `$x}$'. But perhaps the } is legitimate and
-you forgot something else, as in `\hbox{$x}'. In such cases
-the way to recover is to insert both the forgotten and the
-deleted material, e.g., by typing `I$}'.
-
-./A1-252.tex:228: Missing $ inserted.
-<inserted text> 
-                $
-l.228 \end
-          {algorithm}
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-./A1-252.tex:228: Missing } inserted.
-<inserted text> 
-                }
-l.228 \end
-          {algorithm}
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-[4] (./A1-252.aux)
+[3] [4] (./A1-252.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 25775 strings out of 476025
- 652354 string characters out of 5790018
- 1861388 words of memory out of 5000000
- 45773 multiletter control sequences out of 15000+600000
+ 25768 strings out of 476025
+ 652294 string characters out of 5790018
+ 1863388 words of memory out of 5000000
+ 45766 multiletter control sequences out of 15000+600000
  551407 words of font info for 117 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  99i,19n,103p,731b,626s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on A1-252.pdf (4 pages, 105403 bytes).
+Output written on A1-252.pdf (4 pages, 107846 bytes).
 PDF statistics:
  71 PDF objects out of 1000 (max. 8388607)
  44 compressed objects within 1 object stream

@@ -116,48 +116,7 @@ We now determine the above algorithm's worst case time complexity in the bit mod
 where $|\cdot |$ denotes the bit length of an integer. Now, we don't need to worry about the additions in each iteration, as they take linear time and are dwarfed by the multiplications/divisions, which take quadratic time. Hence, we conclude that the worst case time complexity in the bit model for this algorithm is 
 $$T_n = O(\underbrace{\log_2 n}_{\text{\# of iterations}} \times \underbrace{(\log_2 n)^2}_{\text{multiplication}}) = O((\log n )^3) $$
 \newpage 
-\item[\it Exercise 3] Assuming a \textsc{ram} (uniform cost) model of computation, design a recursive divide-and-conquer style $O(n)$ worst-case time algorithm for the following problem. We are given an array $x[1],... , x[n]$ of (possibly negative) integers, and are asked to find two indices $i \leq j$ such that $ x[i] +...+ x[j]$ is maximal. Prove your claim.
-\sol 
-
-\begin{comment}
-\IncMargin{1em}
-\begin{algorithm}
-
-\caption{Maximum Subarray recursive, divide-and-conquer algorithm. }\label{algo_disjdecomp}
-\Input{An array of integers $arr$, and its length $len$.}
-\Output{Two integers, $first, \; last$, representing the first and last index of the maximal subarray.}
-  $tempSum \leftarrow arr[0]$\\ 
-$maxSum \leftarrow -\infty$ \\ 
-$j \leftarrow 0$\\ 
-$first \leftarrow 0$ \\ 
-$last \leftarrow 0$\\ 
-
-  \textsc{MaxSubArray}$(1)$ \\
-  \BlankLine
-
-  \Fn{\textsc{MaxSubArray}$(i)$}{
-  \eIf{$tempSum + arr[i] \geq tempSum$ }{
-  $tempSum \leftarrow tempSum + arr[i]$\\ 
-  }{
-  \If{$tempSum > maxSum$}{
-  $maxSum \leftarrow tempSum$\\ 
-  $last \leftarrow i-1$ \\ 
-  $first \leftarrow j$
-  }
-  $tempSum \leftarrow 0$ \\ 
-  $j \leftarrow i + 1$ \\
-  }
-  \If{$i<len$}{
-  \textsc{MaxSubArray}$(i+1)$
-  }
-}
-\end{algorithm}\DecMargin{1em}
-
-
-To justify that this algorithm has a worst-case time complexity $O(n)$, one only needs to observe that in any case, the array will be traversed exactly once, performing a constant number of operations at each index.
-\end{comment}
-
-
+\item[\it Exercise 3] Maximal Subarray problem. 
 
 \IncMargin{1em}
 \begin{algorithm}
@@ -165,10 +124,11 @@ To justify that this algorithm has a worst-case time complexity $O(n)$, one only
 \SetKwArray{pre}{prefixTupleArray}
 \SetKwArray{suf}{suffixTupleArray}
 \SetKwArray{arr}{arr}
+  \SetKwArray{maxTuple}{maxTuple}
 \SetKwFunction{maxsubarray}{maxSubArray}
 \caption{Maximum Subarray recursive, divide-and-conquer algorithm. }\label{algo_disjdecomp}
 \Input{An array of integers \arr.}
-\Output{Two integers, $first, \; last$, representing the first and last index of the maximal subarray.}
+\Output{A tuple representing the first and last index of the maximal subarray.}
   \pre, \suf $\leftarrow \arr;$  \\  
 \tcp{\pre and \suf are arrays of tuples, \pre[i][0] contains \arr[i]}
 \For{$i \leftarrow 1$ \KwTo $\text{length(\arr)}-1$}{
@@ -188,8 +148,8 @@ To justify that this algorithm has a worst-case time complexity $O(n)$, one only
             \suf[i][1] $\leftarrow i$;
             }
         }
-        \tcp{\pre[i][1] will hold the beginning index of the max subarray ending at i and \suf[i][1] the ending index of the max subarray starting at i. }
-  \Return \maxsubarray (\arr, 0, length(\arr));\\
+        \tcp{\pre[i][1] will hold the beginning index of the max subarray ending at i, and \suf[i][1], starting at i. }
+    \BlankLine
   \Fn{\maxsubarray(array, left, right)}{
   \If{left = right}{
   \Return (array[left], (left, left)); \tcp{return a tuple}
@@ -198,11 +158,34 @@ To justify that this algorithm has a worst-case time complexity $O(n)$, one only
   $ l \leftarrow \maxsubarray(array, left, mid)$;\\
   $r \leftarrow \maxsubarray(array, mid+1, right);$\\ 
   $ a \leftarrow (\pre[mid][0] + \suf[mid+1][0], (\pre[mid][1], \suf[mid+1][1]) ) $; \\   
-  \Return 
+  $\maxTuple \leftarrow l  $; \\
+  \If{$\maxTuple[0]< r[0]$}{
+   $\maxTuple \leftarrow r;$
   }
+  \If{$\maxTuple[0]< a[0]$}{
+   $\maxTuple \leftarrow a;$
+  }
+
+  \Return \maxTuple;
+  }
+\BlankLine 
+  \Return \maxsubarray (\arr, 0, length(\arr))[1];\\
+
 \end{algorithm}
 \DecMargin{1em}
-In the above algorithm, index $i$ of the prefix array will contain the maximal sum of a subarray ending at $i$, while that of the suffix array will contain the maximal sum of a subarray starting at $i$. The complexity for the computation of prefix is always $O(n)$, as we must loop through each element of the array, similarly for suffix. As for the function \textsc{MaxSubarray}, its recurrence is given by
+
+
+
+In the following algorithm, \textsc{prefixTupleArray}[i] is a tuple, with the first element being the maximal sum of a subarray \textbf{ending} at $i$, and the second being the index at which this subarray begins. On the other hand, \textsc{suffixTupleArray} will contain the maximal sum of a subarray \textbf{starting} at $i$ as its first element, and the index at which it ends as its second element. The complexity for the computation of prefix is always $O(n)$, as we must loop through each element of the array, similarly for suffix. 
+
+The function \textsc{maxSubArray} is a divide-and-conquer algorithm that divides the array into smaller arrays, until only its length is of length 1. Then, it will compare each array that was divided in 2, and return a tuple representing the maximal sum within those two arrays at the first index, and another tuple with the beginning and ending indices of the subarray with maximal sum at the second index. There are three possibilities for the maximal subarray: 
+\begin{enumerate}
+  \item[\it (i)] The subarray is entirely contained in the \textbf{left} part of the parent array that was divided in 2;
+  \item[\it (ii)] The subarray is entirely contained in the \textbf{right} part of the parent array that was divided in 2;
+  \item[\it (iii)] The subarray is \textbf{split} between the two arrays on the left and the right. This is where the  \textsc{prefixTupleArray} and \textsc{suffixTupleArray} will be used. 
+\end{enumerate}
+The recurrence of the function described above can be described as 
 $$T_n = 2T_{n/2} $$
+
 \end{enumerate}
 \end{document}

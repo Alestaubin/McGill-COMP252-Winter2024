@@ -62,7 +62,7 @@
 \begin{enumerate}
   \item[\it Exercise 1] Consider a Fibonacci sequence starting with $x_0 = 0,\; x_1 = 1$. For positive integers $k$ and $n$, we would like to compute $x_n \mod k$ and are using the ram model of computation in which standard arithmetic operations, including “mod” take constant time. Describe how you would proceed in two cases: (1) $k = 627$, (2) $k = n$. In both cases, give your complexity in $O(\cdot)$.
   \sol  
-  Case $(1)$: It is known that for any integer $k,$ the sequence of \textit{Fibonacci} numbers modulo $k$ has a period. Let $\pi (k)$, the \textit{Pisano Period, }denote the length of this period. A list of the \textit{Fibonacci} sequence modulo 627 of length $\pi (627)$ can be computed beforehand, since $k=627$ is constant. 
+  \textbf{Case (1)}: It is known that for any integer $k,$ the sequence of \textit{Fibonacci} numbers modulo $k$ has a period. Let $\pi (k)$, the \textit{Pisano Period, }denote the length of this period. A list of the \textit{Fibonacci} sequence modulo 627 of length $\pi (627)$ can be computed beforehand, since $k=627$ is constant. 
 
 \IncMargin{1em}
 \begin{algorithm}
@@ -80,12 +80,52 @@
   $$O(1), $$
   since the only thing our algorithm needs to compute is a modulo, and access an index of a finite array (repeats with n growing rather than increasing), both of which can be done in constant time in the \textsc{ram} model.
 
-  
-  Case (2): 
+  \newpage 
 
+  
+  \textbf{Case (2)}: \newline 
+  We implement the algorithm to compute the $n^{th}$ Fibonacci number using a matrix decomposition of the form 
+  $$\begin{pmatrix}
+    F_{n+1} & F_{n} \\ F_n & F_{n-1}
+  \end{pmatrix} = \begin{pmatrix}
+    1 & 1 \\ 1  &0
+  \end{pmatrix}^n, $$
+  as seen in class. It should be noted that simply multiplying the above matrix $n-1$ times to get the $n^{th}$ element of the Fibonacci sequence yields a time complexity $O(n).$ Thus, we apply a neat little trick, namely, recursive matrix multiplication to bring down this bound to $O(\log n)$. The algorithm is the following:
+
+\begin{algorithm}
+\SetKwFunction{Fibonacci}{Fibonacci}
+\SetKwFunction{MatrixPower}{FastExp}
+
+  \caption{Calculate $n^{th}$ Fibonacci Number modulo $n$ }
+\SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+\Input{$n$: an integer}
+\Output{Fibonacci number at position $n$}
+
+\BlankLine
+  \Fn {\Fibonacci{n}}{
+  \If{$n \leq 1$}{
+    \Return $n$ ;\\ 
+  }
+  $A \leftarrow \begin{bmatrix} 1 & 1 \\ 1 & 0 \end{bmatrix}$;\\
+  $B \leftarrow $ \MatrixPower{$A$, $n-1$};\\
+  \Return $B[0][1] \mod n$;
+  }
+  \BlankLine
+\Fn{\MatrixPower{$M$, $n$}}{
+\If{$n = 1$}{
+\Return{$M$};
+}
+$r \leftarrow n \mod 2$ ; \\ 
+  $m \leftarrow \lfloor n/2 \rfloor$ ; \\  
+  \Return $(\MatrixPower{M, m})^2 * M^r$
+}
+
+\end{algorithm}
+
+To obtain the $n^{th}$ fibonacci number modulo $n$, \textsc{Fibonacci}$(n)$ is called first, which will call \textsc{FastExp}$(M,n)$ to compute the matrix multiplication. The former function clearly operates in constant time. As for the latter, it will have at most $\lfloor \log_2 n \rfloor$ recursive calls, hence at most the same amount of squarings and multiplications. Since these computations take constant time in the \textsc{ram} model, we conclude that the algorithm runs in $O(\log n)$ time complexity. 
 \newpage
 \item[\it Exercise 2] In the bit model of computation, give an efficient algorithm for determining whether a given integer $n$ is a perfect square, and determine its worst-case complexity in big oh notation as a function of $n$.
-\sol  
+\sol   
 \IncMargin{1em}
 \begin{algorithm}
 \SetKwData{Left}{left}\SetKwData{This}{this}\SetKwData{Up}{up}
@@ -115,7 +155,7 @@ $right \leftarrow n$ \\
 \end{algorithm}\DecMargin{1em}
 
 
-We now determine the above algorithm's worst case time complexity in the bit model, denoting it $T_n$. In the worst case, line \textbf{3} will run $\log_2 n$ times, let $i$ be the iteration number. We safely estimate that in the worst case, at iteration $i,$ we have, $$|mid|= \lfloor \log_2 n \rfloor + 1$$ 
+We now determine the above algorithm's worst case time complexity in the bit model, denoting it $T_n$. In the worst case, line \textbf{3} will run $\log_2 n$ times, and we safely estimate that in the worst case, at each of those iterations we have, $$|mid|= \lfloor \log_2 n \rfloor + 1$$ 
 where $|\cdot |$ denotes the bit length of an integer. Now, we don't need to worry about the additions in each iteration, as they take linear time and are dwarfed by the multiplications/divisions, which take quadratic time. Hence, we conclude that the worst case time complexity in the bit model for this algorithm is 
 $$T_n = O(\underbrace{\log_2 n}_{\text{\# of iterations}} \times \underbrace{(\log_2 n)^2}_{\text{multiplication}}) = O((\log n )^3) $$
 \newpage 

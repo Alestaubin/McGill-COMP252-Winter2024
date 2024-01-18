@@ -62,7 +62,7 @@
 \begin{enumerate}
   \item[\it Exercise 1] Consider a Fibonacci sequence starting with $x_0 = 0,\; x_1 = 1$. For positive integers $k$ and $n$, we would like to compute $x_n \mod k$ and are using the ram model of computation in which standard arithmetic operations, including “mod” take constant time. Describe how you would proceed in two cases: (1) $k = 627$, (2) $k = n$. In both cases, give your complexity in $O(\cdot)$.
   \sol  
-  Case $(1)$: It is known that for any integer $k,$ the sequence of \textit{Fibonacci} numbers modulo $k$ has a period. Let $\pi (k)$, the \textit{Pisano Period, }denote the length of this period. A list of the \textit{Fibonacci} sequence modulo 627 of length $\pi (627)$ can be computed beforehand. 
+  Case $(1)$: It is known that for any integer $k,$ the sequence of \textit{Fibonacci} numbers modulo $k$ has a period. Let $\pi (k)$, the \textit{Pisano Period, }denote the length of this period. A list of the \textit{Fibonacci} sequence modulo 627 of length $\pi (627)$ can be computed beforehand, since $k=627$ is constant. 
 
 \IncMargin{1em}
 \begin{algorithm}
@@ -77,7 +77,10 @@
   \KwRet{$fibSeqMod [x]$}
 \end{algorithm}\DecMargin{1em}
   Note that in this first case, the Pisano period and in particular, the first $\pi (627)$ elements modulo $627$ of the Fibonacci sequence are constant, no matter the input $n$. It follows that the time complexity is 
-  $$O(1) $$
+  $$O(1), $$
+  since the only thing our algorithm needs to compute is a modulo, and access an index of an array, both of which can be done in constant time in the \textsc{ram} model.
+
+  
   Case (2): 
 
 \newpage
@@ -117,7 +120,7 @@ where $|\cdot |$ denotes the bit length of an integer. Now, we don't need to wor
 $$T_n = O(\underbrace{\log_2 n}_{\text{\# of iterations}} \times \underbrace{(\log_2 n)^2}_{\text{multiplication}}) = O((\log n )^3) $$
 \newpage 
 \item[\it Exercise 3] Maximal Subarray problem. 
-
+\sol  
 \IncMargin{1em}
 \begin{algorithm}
 

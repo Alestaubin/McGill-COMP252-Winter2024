@@ -122,7 +122,7 @@ $r \leftarrow n \mod 2$ ; \\
 
 \end{algorithm}
 
-To obtain the $n^{th}$ fibonacci number modulo $n$, \textsc{Fibonacci}$(n)$ is called first, which will call \textsc{FastExp}$(M,n)$ to compute the matrix multiplication. The former function clearly operates in constant time. As for the latter, it will have at most $\lfloor \log_2 n \rfloor$ recursive calls, hence at most the same amount of squarings and multiplications. Since these computations take constant time in the \textsc{ram} model, we conclude that the algorithm runs in $O(\log n)$ time complexity. 
+To obtain the $n^{th}$ fibonacci number modulo $n$, \textsc{Fibonacci}$(n)$ is called first, which will call \textsc{FastExp}$(M,n)$ to compute the matrix multiplication. The former function clearly operates in constant time in the \textsc{ram} model. As for the latter, it will have at most $\lfloor \log_2 n \rfloor$ recursive calls, hence at most the same amount of squarings and multiplications. Since these computations take constant time in the \textsc{ram} model, we conclude that the algorithm runs in $O(\log n)$ time complexity. 
 \newpage
 \item[\it Exercise 2] In the bit model of computation, give an efficient algorithm for determining whether a given integer $n$ is a perfect square, and determine its worst-case complexity in big oh notation as a function of $n$.
 \sol   

@@ -5,16 +5,29 @@
 \usepackage{amsmath}
 \usepackage{amsthm} %needed for the proofs 
 \usepackage{amssymb}
-
 \usepackage{titling}
 \usepackage{thmtools}
 \usepackage{mathptmx} %font
 \usepackage{verbatim} % for comments
-
-%\usepackage{algpseudocode} % for algorithm pseudo code
-%\usepackage{algorithm}
-%\usepackage[linesnumbered,lined,boxed,commentsnumbered]{algorithm2e}
+\usepackage{mdframed}
 \usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\usepackage{lipsum}
+
+\usepackage[T1]{fontenc} %header
+\usepackage[utf8]{inputenc}%header
+\usepackage{geometry} %header
+\usepackage{fancyhdr}%header
+
+\renewcommand{\headrulewidth}{.4mm} % header line width
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhfoffset[L]{1cm} % left extra length
+\fancyhfoffset[R]{1cm} % right extra length
+\rhead{\today}
+\lhead{\it Alexandre St-Aubin \& Jonathan Campana}
+\rfoot{}
+
 %macros for recursive functions
 \newcommand{\forcond}{$i=0$ \KwTo $n$}
 \SetKwFunction{FRecurs}{MaxSubArray}%
@@ -47,6 +60,10 @@
 
 \setlength\parindent{24pt}%set paragraph indent
 
+\newenvironment{ftheo}
+  {\begin{mdframed}\begin{theorem}}
+  {\end{theorem}\end{mdframed}}
+
 \newcommand\sol{%
   \\ 
   \\
@@ -55,8 +72,8 @@
 
 \setlength{\droptitle}{-6em}
 
-\title{\textsc{Assignment 1 -- Comp 252}}  
-\author{Alexandre St-Aubin and some other guy}
+\title{\textsc{Assignment 2 -- Comp 252}}  
+\author{Alexandre St-Aubin \& Jonathan Campana}
 \date{\today}
 
 \begin{document}
@@ -66,19 +83,77 @@
 You are given $n$ vectors $x_1,... , x_n$ in $\mathbb{Z}^n$. Design an efficient algorithm in the ram model for computing for each $x_i$ one of its nearest
 neighbors among the other points, using the standard Euclidean metric to measure distances. You can’t
 use real numbers, and operations like square root are not available. Nevertheless, show how this can be
-done in $O(n^3)$ worst-case time.
+done in $o(n^3)$ worst-case time.
 \sol   
-   We first note that minimizing the eucledian distance between 2 vectors of length $n$ is equivalent to minimizing the absolute difference between each component of the vectors. Let $x_i = (x_{i,1}, ..., x_{i,n}), \; x_j = (x_{j,1}, ..., x_{j,n})$ both in $\mathbb{Z}^n$, and define 
-  $$d_1(x_i, x_j) := \sum_{k=1}^n |x_{i,k} -x_{j,k}| $$
-  It is obvious that $d_1 \sim O(n)$, and that no real numbers, nor square roots were used to compute it. For any given $x_i, \; 1\leq i, \leq n$, our goal will be to find the closest vector $x_j$ to $x_i$, denote it
-  $$ f_{min}(x_i) := \left\{x_j \mid d_1(x_j, x_i) = \min_{1\leq j\leq n,j\neq i} d_1(x_j, x_i)  \right\} $$
-  \hspace{24pt} Now, let $G=K_n$ be the complete graph on $n$ vertices, and let each vertex represent a vector $x_i.$ We want to assign a weight to each edge of $G$, which will represent the distance between its incident vertices. That is, the weight of the edge $x_ix_j$ will be $d_1 (x_i, x_j).$ By the handshaking lemma, $G$ has $\frac{n(n-1)}{2} $ edges, so we only need to compute as many weights (distances).  
+   We first note that minimizing the eucledian distance between 2 vectors of length $n$ is equivalent to minimizing the sum of squared differences between each individual components. The reason for this is that the square root is a monotone increasing function. Let $x_i = (x_{i,1}, ..., x_{i,n}), \; x_j = (x_{j,1}, ..., x_{j,n})$ both in $\mathbb{Z}^n$, and define 
+  \begin{equation}d_2^2(x_i, x_j) := \sum_{k=1}^n (x_{i,k} -x_{j,k})^2 = \sum_{k=1}^n(x_{i,k}x_{i,k} - 2 x_{i,k} x_{j,k} + x_{j,k}x_{j,k}) = \langle x_i, x_i  \rangle + 2\langle x_i, x_j  \rangle  + \langle x_j, x_j  \rangle \end{equation}
+  It is obvious that $d_2^2 \sim O(n)$ in the \textsc{ram} model , and that no real numbers, nor square roots were used to compute it. Now, we notice that $\frac{n(n-1)}{2}$ distances need to be computed, and in view of dynamic programming, we find a way to compute everything at once in order to reduce the complexity that would occur if we were to get each $d_2^2$ individually, namely, $O(n^3)$. Construct the following matrix, 
 
+  $$ X = \begin{pmatrix}
+    x_{1,1} & x_{1,2} & x_{1,3} & \hdots & x_{1,n} \\ 
+ x_{2,1} & x_{2,2} & x_{2,3} & \hdots & x_{2,n} \\
+ x_{3,1} & x_{3,2} & x_{3,3} & \hdots & x_{3,n}\\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+     x_{n,1} & x_{n,2} & x_{n,3} & \hdots & x_{n,n}
+  \end{pmatrix} $$
+  Then, 
+  $$X \cdot X^T = \begin{pmatrix}
+    \sum_{k = 1}^n x_{1,k}x_{1,k} & \sum_{k = 1}^n x_{1,k}x_{2,k} & \hdots  & \sum_{k = 1}^n x_{1,k}x_{n,k} \\ 
+    \sum_{k = 1}^n x_{2,k}x_{1,k} & \sum_{k = 1}^n x_{2,k}x_{2,k} & \hdots  & \sum_{k = 1}^n x_{2,k}x_{n,k} \\ 
+\vdots & \vdots & \ddots & \vdots \\ 
+    \sum_{k = 1}^n x_{n,k}x_{1,k} & \sum_{k = 1}^n x_{n,k}x_{2,k} & \hdots  & \sum_{k = 1}^n x_{n,k}x_{n,k}
+  \end{pmatrix} = \begin{pmatrix}
+    \langle x_1, x_1  \rangle &\langle x_1, x_2  \rangle & \hdots & \langle x_1, x_n  \rangle \\ 
+\langle x_2, x_1  \rangle &\langle x_2, x_2  \rangle & \hdots & \langle x_2, x_n  \rangle \\ 
+\vdots & \vdots & \ddots & \vdots \\ 
 
-   \hspace{24pt} We associate an ordered list of distances to each vertex in the graph. The distances in the list will represent only those between vertices incident to the one whose list it is. In order to keep track of the closest vector, we also add a reference from each distance, to the vector it represents. Each time we compute one of the $\frac{n(n-1)}{2}$ edge distances, we add it to the lists of both vertices incident to that edge. At the end of the process described above, for each $x_i$ its closest neighbour will be the first one on its list of distances.
-   
-   \hspace{24pt} As for the time complexity of the process, $d_1$ is $O(n)$ , and since we need to compute $\frac{n(n-1)}{2}$ distances, it follows that the overall time complexity is
-   $$T_n = n \cdot \frac{n(n-1)}{2} = \frac{n^3-n^2}{2} = O(n^3) $$
+\langle x_n, x_1  \rangle &\langle x_n, x_2  \rangle & \hdots & \langle x_n, x_n  \rangle  
+
+  \end{pmatrix}  $$
+
+where the entries of $X \cdot {X^T}$ are exactly the dot products needed in (1). 
+Therefore, by employing \textsc{Strassen's} algorithm, we can efficiently compute the product $X \cdot {X^T}$ with a time complexity of $O(n^{2.807})$. Subsequently, each of the $\frac{n(n-1)}{2} $ distances can be computed in $O(n^2)$ time, as computing one distance will take constant time. Simultaneously, these distances can be added to an ordered list (corresponding to each individual vector) in constant time. Upon completion of this process, we will have the closest vector to any given vector readily accessible. The algorithm outlined above has a complexity of $O(n^{2.807})$, demonstrating that it can be accomplished in worst-case time less than $o(n^3)$.
+
+  \newpage 
+  \item \textsc{Dynamic programming: computing the optimal star.}  
+  \newpage  
+  \item \textsc{Induction.} We are given the recurrence 
+  $$T_n = 2 T_{\frac{n}{a}} + 7 T_{\frac{n}{a^2}} + 1,$$
+  where $a \geq 2$ is a given integer, and $n$ is restricted to be a power of $a$. We also know that $T_1 = T_a = 1$.\newline
+  \begin{enumerate}
+    \item[\it (a)] $T_n = \Omega(n^c)$ for some constant $c.$
+\begin{proof} For the base case, let $n = a^2$, then, 
+  $$T_{a^2} = 2 T_a + 7T_1 + 1 = 2 + 7  + 1 = \Omega(1) = \Omega(n^0), $$
+  Now, assume $T_{a^k} = \Omega ((a^k)^c)$, for any $2\leq k < n$, then we have 
+  \begin{equation*}
+    \begin{split}
+      T_{a^n} &= 2 T_{a^{n-1}} + 7T_{a^{n-2}} + 1\\ 
+      &\leq 2 ((a^{n-1})^c) + 7((a^{n-2})^c) + 1 \quad [\text{by I.H.}]\\ 
+      & \leq 9 (a^{n-1})^c \\
+      & = \frac{9}{a^c} \left( a^n\right)^c \\ 
+    \end{split}
+  \end{equation*}
+  Where $\frac{9}{a^c} $ is a constant so we conclude that $T_{a^n} = \Omega ((a^n)^c)$. Remains to find the largest such $c.$ 
+\end{proof}
+  \end{enumerate}
+
 \end{enumerate}
  
 \end{document}
+
+
+
+
+For any given $x_i, \; 1\leq i, \leq n$, our goal will be to find the closest vector to $x_i$, denote it
+  $$ f_{min}(x_i) := \underset{1 \leq j \leq n}{\text{argmin}}\left\{d_2^2(x_j, x_i) \right\} $$
+  \hspace{24pt} Now, let $G=K_n$ be the complete graph on $n$ vertices, and let each vertex represent a vector $x_i.$ We want to assign a weight to each edge of $G$, which will represent the distance between its incident vertices. That is, the weight of the edge $x_ix_j$ will be $d_2^2(x_i, x_j).$ By the \textit{Handshaking Lemma}, $G$ has $\frac{n(n-1)}{2} $ edges, so we only need to compute as many weights (distances).  
+
+
+   \hspace{24pt} We associate an ordered list of distances to each vertex in the graph. The distances in the list will represent only those between vertices incident to the one whose list it is. In order to keep track of the closest vector, we also add a reference from each distance, to the vector it represents. Each time we compute one of the $\frac{n(n-1)}{2}$ edge distances, we add it to the lists of both vertices incident to that edge. At the end of the process described above, for each $x_i$, its closest neighbour will be the first one on its list of distances.
+   
+   \hspace{24pt} As for the time complexity of the process, $d_2^2$ is $O(n)$ , and since we need to compute $\frac{n(n-1)}{2}$ distances, it follows that the overall time complexity is
+   $$T_n = n \cdot \frac{n(n-1)}{2} = \frac{n^3-n^2}{2} = O(n^3) $$
+   \begin{ftheo}[Handshaking lemma]
+   Maybe do smt
+  \end{ftheo}
+

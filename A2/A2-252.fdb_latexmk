@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1706496649 "A2-252.tex" "A2-252.pdf" "A2-252" 1706496650 0
+["pdflatex"] 1706537508 "A2-252.tex" "A2-252.pdf" "A2-252" 1706537509 0
   "/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2023/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/symbol/psyr.tfm" 1136768653 1408 5937f58aa508ea2cea4901c07d10f5fe ""
@@ -222,8 +222,8 @@
   "/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1693683507 4623355 b8cad38412faebe1ce5b780a45db67bd ""
   "/usr/local/texlive/2023/texmf-var/web2c/pdftex/pdflatex.fmt" 1693683423 7883466 0daf13f68d70d6b799279728d2d79159 ""
   "/usr/local/texlive/2023/texmf.cnf" 1678822455 577 1b2b1af17af2508fb20dd85783af4050 ""
-  "A2-252.aux" 1706496650 104 92a43626b2c964c980ced4926c66d025 "pdflatex"
-  "A2-252.tex" 1706496647 7963 e531115b33ae0f7b0127ce59f9662c1b ""
+  "A2-252.aux" 1706537509 245 97628224f5f4b38032a0809ae4b1fbb3 "pdflatex"
+  "A2-252.tex" 1706537506 8839 d1af4be9924544aef4e3d7fef166ba52 ""
   (generated)
   "A2-252.aux"
   "A2-252.log"

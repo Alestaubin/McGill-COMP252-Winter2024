@@ -85,7 +85,7 @@ neighbors among the other points, using the standard Euclidean metric to measure
 use real numbers, and operations like square root are not available. Nevertheless, show how this can be
 done in $o(n^3)$ worst-case time.
 \sol   
-   We first note that minimizing the eucledian distance between 2 vectors of length $n$ is equivalent to minimizing the sum of squared differences between each individual components. The reason for this is that the square root is a monotone increasing function. Let $x_i = (x_{i,1}, ..., x_{i,n}), \; x_j = (x_{j,1}, ..., x_{j,n})$ both in $\mathbb{Z}^n$, and define 
+   We first note that minimizing the Euclidean distance between 2 vectors of length $n$ is equivalent to minimizing the sum of squared differences between each individual components. The reason for this is that the square root is a monotone increasing function. Let $x_i = (x_{i,1}, ..., x_{i,n}), \; x_j = (x_{j,1}, ..., x_{j,n})$ both in $\mathbb{Z}^n$, and define 
   \begin{equation}d_2^2(x_i, x_j) := \sum_{k=1}^n (x_{i,k} -x_{j,k})^2 = \sum_{k=1}^n(x_{i,k}x_{i,k} - 2 x_{i,k} x_{j,k} + x_{j,k}x_{j,k}) = \langle x_i, x_i  \rangle + 2\langle x_i, x_j  \rangle  + \langle x_j, x_j  \rangle \end{equation}
   It is obvious that $d_2^2 \sim O(n)$ in the \textsc{ram} model , and that no real numbers, nor square roots were used to compute it. Now, we notice that $\frac{n(n-1)}{2}$ distances need to be computed, and in view of dynamic programming, we find a way to compute everything at once in order to reduce the complexity that would occur if we were to get each $d_2^2$ individually, namely, $O(n^3)$. Construct the following matrix, 
 
@@ -112,7 +112,7 @@ done in $o(n^3)$ worst-case time.
   \end{pmatrix}  $$
 
 where the entries of $X \cdot {X^T}$ are exactly the dot products needed in (1). 
-Therefore, by employing \textsc{Strassen's} algorithm, we can efficiently compute the product $X \cdot {X^T}$ with a time complexity of $O(n^{2.807})$. Subsequently, each of the $\frac{n(n-1)}{2} $ distances can be computed in $O(n^2)$ time, as computing one distance will take constant time. Simultaneously, these distances can be added to an ordered list (corresponding to each individual vector) in constant time. Upon completion of this process, we will have the closest vector to any given vector readily accessible. The algorithm outlined above has a complexity of $O(n^{2.807})$, demonstrating that it can be accomplished in worst-case time less than $o(n^3)$.
+Therefore, by employing \textsc{Strassen's} algorithm, we can efficiently compute the product $X \cdot {X^T}$ with a time complexity of $O(n^{2.807})$. Subsequently, each of the $\frac{n(n-1)}{2} $ distances can be computed in $O(n^2)$ time, as computing one distance will take constant time by accessing the dot products in the matrix previously computed. Simultaneously, these distances can be added to an ordered list (corresponding to each individual vector) in constant time. Upon completion of this process, we will have the closest vector to any given vector readily accessible. The algorithm outlined above has a complexity of $O(n^{2.807})$, demonstrating that it can be accomplished in worst-case time less than $o(n^3)$.
 
   \newpage 
   \item \textsc{Dynamic programming: computing the optimal star.}  
@@ -135,6 +135,18 @@ Therefore, by employing \textsc{Strassen's} algorithm, we can efficiently comput
   \end{equation*}
   Where $\frac{9}{a^c} $ is a constant so we conclude that $T_{a^n} = \Omega ((a^n)^c)$. Remains to find the largest such $c.$ 
 \end{proof}
+  \end{enumerate}
+  \newpage
+  \item  \textsc{Sorting with Duplicates} We are concerned here with sorting $n$ numbers with possible duplicates: the total number of different numbers in the input is $k$, an unknown number between one and n. This can be done in time $O(n \log_2(k + 1))$ with a ternary comparison oracle. 
+  \begin{enumerate}
+    \item[\it (i)] Give a divide-and-conquer algorithm that achieves this. 
+\begin{remark} 
+    Big hint is that it's a ternary oracle, so it tells you whether an element is >, < or = in 1 time unit. Then think about how you can take advantage of duplicate terms. In oracle model, the only thing that takes 1 time unit is using the oracle. Everything else we can do for 0 (additions and assignments specifically).
+
+
+\end{remark}
+    \item[\it (ii)] Prove the complexity claim.
+
   \end{enumerate}
 
 \end{enumerate}

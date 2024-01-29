@@ -137,35 +137,71 @@ Therefore, by employing \textsc{Strassen's} algorithm, we can efficiently comput
 \end{proof}
   \end{enumerate}
   \newpage
-  \item  \textsc{Sorting with Duplicates} We are concerned here with sorting $n$ numbers with possible duplicates: the total number of different numbers in the input is $k$, an unknown number between one and n. This can be done in time $O(n \log_2(k + 1))$ with a ternary comparison oracle. 
-  \begin{enumerate}
-    \item[\it (i)] Give a divide-and-conquer algorithm that achieves this. 
+  \item  \textsc{Sorting with Duplicates.} \begin{enumerate}
+    \item[\it (i)] Give a divide-and-conquer algorithm that sorts $n$ numbers with $1\leq k\leq n$ uniques. This can be done in time $O(n \log_2(k + 1))$ with a ternary comparison oracle. 
+    \sol See the algorithm on the next page.
+   \item[\it (ii)] Prove the complexity claim.
 \begin{remark} 
-    Big hint is that it's a ternary oracle, so it tells you whether an element is >, < or = in 1 time unit. Then think about how you can take advantage of duplicate terms. In oracle model, the only thing that takes 1 time unit is using the oracle. Everything else we can do for 0 (additions and assignments specifically).
-
-
+    A ternary oracle, tells you whether an element is >, < or = in 1 time unit. Everything else we can do for 0 (additions and assignments specifically).
 \end{remark}
-    \item[\it (ii)] Prove the complexity claim.
+  \begin{algorithm}
+    \caption{DC algorithm to sort a list of $n$ elements with $1\leq k\leq n$ duplicates. }
+    \SetKwFunction{ms}{MergeSort}
+    \SetKwFunction{me}{Merge}
+    \SetKwFunction{eq}{TernaryOracle}
+    \SetKwArray{arr}{array}
+    \SetKwArray{L}{Left}
+    \SetKwArray{R}{Right}
+    \SetKwData{mid}{mid}
+    \SetKwInput{KwIn}{Input}
+    \SetKwInput{KwOut}{Output}
+    \KwIn{An arbitrary \arr of integers.}
+    \KwOut{The sorted array.}
+    \BlankLine
+    \tcp{Initialize the array with Tuples }
+    \For{$i = 0$ to $l(\arr)$ }{
+    $\arr[i] \leftarrow$ new Tuple$(i, 1)$; \\ 
+    }\BlankLine
+
+    \tcp{ A function to compare tuples, each use costs 1. Anything else is free.}
+    \Fn{\eq {tuple1, tuple2}}{
+    \If{tuple1[0] = tuple2[0]}{
+    \Return 0; 
+    }\ElseIf{tuple1[0] < tuple2[0]}{\Return -1;}
+    \Else{\Return 1;}
+    }\BlankLine
+    \Fn{\ms{\arr}}{
+    \eIf{l(\arr) < 2}{\Return \arr;}{
+\mid $\leftarrow \lfloor l(\arr)/2 \rfloor$; \\ 
+    \Return \me(\ms(\arr[:\mid]), \ms (\arr[\mid :]));}
+    }\BlankLine
+    \Fn{\me{\L, \R}}{
+    $i,j \leftarrow 0;$ \\ 
+    \arr $\leftarrow $ new array; \\ 
+    \While{$i \leq l(\L)\;\& \&\; j \leq l(\R)$}{
+\Switch{$\eq{\L[i], \R[j]}$}{
+\uCase{$0$}{
+$\arr [i+ j] \leftarrow$ new Tuple$(\L[i][0], \L[i][1]+\R[i][1])$ ;\\ 
+    $i ++, \; j ++ $;
+}
+\uCase{$1$}{
+    $\arr [i+ j] \leftarrow \L[i]$ ;\\ 
+    $i++;$
+}
+\uCase{$-1$}{ $\arr [i+ j] \leftarrow \R[j]$ ;\\ 
+    $j++;$
+}
+
+    } \tcp{then add the rest of the array that we didn't reach the end of to the current array:}
+    }$\arr \leftarrow \arr \& (i\leq l(\L))*\L[i: l(\L)] \& (j\leq l(\R))*\R[j: l(\R)]  $
+}
+
+
+  \end{algorithm}
+
 
   \end{enumerate}
 
 \end{enumerate}
  
 \end{document}
-
-
-
-
-For any given $x_i, \; 1\leq i, \leq n$, our goal will be to find the closest vector to $x_i$, denote it
-  $$ f_{min}(x_i) := \underset{1 \leq j \leq n}{\text{argmin}}\left\{d_2^2(x_j, x_i) \right\} $$
-  \hspace{24pt} Now, let $G=K_n$ be the complete graph on $n$ vertices, and let each vertex represent a vector $x_i.$ We want to assign a weight to each edge of $G$, which will represent the distance between its incident vertices. That is, the weight of the edge $x_ix_j$ will be $d_2^2(x_i, x_j).$ By the \textit{Handshaking Lemma}, $G$ has $\frac{n(n-1)}{2} $ edges, so we only need to compute as many weights (distances).  
-
-
-   \hspace{24pt} We associate an ordered list of distances to each vertex in the graph. The distances in the list will represent only those between vertices incident to the one whose list it is. In order to keep track of the closest vector, we also add a reference from each distance, to the vector it represents. Each time we compute one of the $\frac{n(n-1)}{2}$ edge distances, we add it to the lists of both vertices incident to that edge. At the end of the process described above, for each $x_i$, its closest neighbour will be the first one on its list of distances.
-   
-   \hspace{24pt} As for the time complexity of the process, $d_2^2$ is $O(n)$ , and since we need to compute $\frac{n(n-1)}{2}$ distances, it follows that the overall time complexity is
-   $$T_n = n \cdot \frac{n(n-1)}{2} = \frac{n^3-n^2}{2} = O(n^3) $$
-   \begin{ftheo}[Handshaking lemma]
-   Maybe do smt
-  \end{ftheo}
-

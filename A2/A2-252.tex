@@ -18,6 +18,19 @@
 \usepackage{geometry} %header
 \usepackage{fancyhdr}%header
 
+%images
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+% to include an image, do: 
+%    \begin{center}
+%    \includegraphics[scale=0.20]{graph.jpg}
+%    \end{center}
+% OR: 
+%\begin{figure}
+%    \centering
+%    \includegraphics[scale=0.20]{IMG_1052.jpg}
+%    \caption{Your caption text here.}
+%\end{figure}
 \renewcommand{\headrulewidth}{.4mm} % header line width
 
 \pagestyle{fancy}
@@ -120,7 +133,7 @@ Therefore, by employing \textsc{Strassen's} algorithm, we can efficiently comput
     \caption{Algorithm to compute the optimal star.}
     \SetKwInput{KwOut}{Output}
     \KwIn{A matrix $D[i,j]$ of pairwise distances between cities $1 \leq i,j \leq n$. }
-    \KwOut{The optimal star that links the cities.}
+    \KwOut{The cost of the optimal star that links the given cities.}
     \BlankLine
     \tcp{initialize M[v, S] for sets of size 1}
     \For{all $i\in [1,n]$}{
@@ -129,16 +142,20 @@ Therefore, by employing \textsc{Strassen's} algorithm, we can efficiently comput
       }
     }\BlankLine
 \tcp{loop through each central city}
-    \For{$v\in [1,n]$}{
+    \For{all $v\in [1,n]$}{
     \tcp{loop through each subset size}
        \For{all $k\in [1, n-1]$ }{
        \tcp{loop through each subset of size k excluding the central city}
           \For{all $S$ with $|S| = k,\; S \subseteq \{1, ..., n\}\setminus\{v\}$ }{
               $M[v,S] \leftarrow \min_{l\in S} \left\{ M[v, S\setminus \{l\}] + \min\{d(l, x) \; : \; x = v 
-              \text{ or } \deg(x) = 1\right\}$; 
+              \text{ or } \deg(x) = 1\}\right\}$; 
           } 
        }
-    }
+    }\BlankLine
+    
+    \Return $\min_{v \in [1,n]} \left\{M[v, S] : |S| = n \right\}$
+
+
   \end{algorithm}
 
   \begin{remark} 
@@ -148,7 +165,7 @@ Therefore, by employing \textsc{Strassen's} algorithm, we can efficiently comput
 
 \hspace{24pt} Allow $\Omega$ to represent the set of all vertices (cities). The outer loop iterates through each potential central vertex $v$ of the star, while the subsequent loops systematically explore subsets of $\Omega\setminus {v}$ in a bottom-up fashion. Starting with subsets of size $1$ (i.e., $S = {s}$), we know $M[v,S] = d(v, s)$. We then progress through sets of increasing size, using our knowledge from preceding, smaller sets to obtain an optimal set length, until we reach $M[v, \Omega\setminus v]$,  thereby identifying the optimal star configuration with the central vertex $v$. 
 
-\hspace{24pt} Let's delve into the time complexity analysis. Line 1 executes $n$ times. Lines 2 and 3 represent all possible subsets of a set with $n-1$ vertices, resulting in $2^{n-1}$ iterations. We can safely assume line 4 to be $O(n)$. Combining these components, the overall time complexity is given as $O(n^2 \cdot 2^n)$.
+\hspace{24pt} Let's delve into the time complexity analysis. Line 4 executes $n$ times. Lines 5 and 6 represent all possible subsets of a set with $n-1$ vertices, resulting in $2^{n-1}$ iterations. We can safely assume line 7 to be $O(n)$. Combining these components, the overall time complexity is given as $O(n^2 \cdot 2^n)$. We note that lines 1 \& 8 run in $O(n)$ time, so they play no significant role in the overall time complexity of the algorithm. 
 
 \newpage 
   \item \textsc{Induction.} We are given the recurrence 
@@ -173,11 +190,36 @@ Therefore, by employing \textsc{Strassen's} algorithm, we can efficiently comput
   \newpage
   \item  \textsc{Sorting with Duplicates.} \begin{enumerate}
     \item[\it (i)] Give a divide-and-conquer algorithm that sorts $n$ numbers with $1\leq k\leq n$ uniques. This can be done in time $O(n \log_2(k + 1))$ with a ternary comparison oracle. 
-    \sol See the algorithm on the next page.
+    
+    \textit{See Algorithm 2 on next page.}
    \item[\it (ii)] Prove the complexity claim.
+   \begin{proof} 
+     For the sake of simplicity, we assume that $k = 2^i$ for some $i \in \mathbb{N}$. To prove that the complexity of our algorithm is $O(n \log(k+1)),$ we count the number of times that it uses the ternary oracle (number of comparisons made), as the rest costs 0, by the oracle model of complexity. We notice that the comparisons occur only at the \textit{merge} step of the algorithm, so we'll start counting at the first merge, namely when we have $n$ subarrays of size 1. We assume the worst case, i.e. that no duplicates are found in the merges until level $\log_2k$ is reached (see Figure \ref{fig1}). When this level is reached, we have $\frac{n}{k}$ sets of length at most $k$, and the next step will surely find duplicates, thereby reducing the running time compared to plain old merge sort. 
+     
+
+     \hspace{24pt} Let's count the number of comparison needed to get to level $\log_2k$ of the merging. In order to get one subarray of length $k$, $k$ subarrays of length 1 must be merged into 1. This process will take $\log_2 k$ merges, each one costing $\frac{(2^i-1)k}{2^i}$ comparisons, that is, 
+     $$\sum^{\log_2 k}_{i=1} \frac{(2^i-1)k}{2^i} \leq \sum^{\log_2k}_{i=1} k = n \log_2 k \text{  comparisons.} $$
+     And, since there are $\frac{n}{k}$ such subarrays, it follows that the complexity of the above process is $O(n \log_2 k).$ 
+  
+
+     \hspace{24pt} We now consider the second and last part of our computation. At this step, we have $\frac{n}{k}$ sets of size $k$. In the normal merge sort algorithm, the next step would generate half as many sets of double the size ($2k$). However, our algorithm combines duplicate terms into a single tuple element, and since there are only $k$ elements that are different in our set, $k$ is an upper bound for the size of a subarray. Hence, we instead obtain half the amount of sets, but still of size at most $k$. This is also true for all the following merges. 
+
+    
+     \hspace{24pt} Let's compute the time complexity of merging $\frac{n}{k}$ subarrays until we have 1 array of length $k.$ Well, it is clear that each merge will cost at most $k$ comparisons, as in the worst case, we are merging two arrays of length $k,$ which must therefore be identical, as they are ordered and contain the same k elements. Thus, the oracle will yield $k$ equalities, which suffices to merge the arrays. So, the total number of comparisons is given by 
+     $$k \sum^{\log_2 \frac{n}{k}}_{i=0}  2^i = k (2^{\log_2 \frac{n}{k} }-1) = k \left( \frac{n}{k} -1 \right) = n-k  $$
+     Combining both processes, it is easy to see that the total time complexity is 
+     $$O(n-k + n \log_2 (k) ) = O(n \log_2 (k + 1)) $$
 \begin{remark} 
-    A ternary oracle, tells you whether an element is >, < or = in 1 time unit. Everything else we can do for 0 (additions and assignments specifically).
+  The reason why the complexity is $O(n\log_2(k+1))$, and not $O(n\log_2(k))$ is that in the case where $k = 1$, if we need the complexity to be $O(n \log_2 (1))$, not $O(0)$. 
 \end{remark}
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.20]{IMG_1052.jpg}
+    \caption{The merging of subarrays.}
+    \label{fig1}
+\end{figure}
+   \end{proof}
+
   \begin{algorithm}
     \caption{DC algorithm to sort a list of $n$ elements with $1\leq k\leq n$ duplicates. }
     \SetKwFunction{ms}{MergeSort}

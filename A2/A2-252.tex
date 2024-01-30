@@ -116,6 +116,28 @@ Therefore, by employing \textsc{Strassen's} algorithm, we can efficiently comput
 
   \newpage 
   \item \textsc{Dynamic programming: computing the optimal star.}  
+  \begin{algorithm}
+    \caption{Algorithm to compute the optimal star.}
+    \SetKwInput{KwOut}{Output}
+    \KwIn{A matrix $D[i,j]$ of pairwise distances between cities $1 \leq i,j \leq n$. }
+    \KwOut{The optimal star that links the cities.}
+    \BlankLine
+\tcp{loop through each central city}
+    \For{$v\in [1,n]$}{
+    \tcp{loop through each subset size}
+       \For{ all $k\in [1, n-1]$ }{
+       \tcp{loop through each subset of size k excluding the central city}
+          \For{ all $S$ with $|S| = k,\; S \subseteq \{1, ..., n\}\setminus\{v\}$ }{
+              $M[v,S] = \min_{l\in S} \left\{ M[v, S\setminus \{l\}] + \min\{d(l, x) \; : \; x = v 
+              \text{ or } \deg(x) = 1\right\}$; 
+          } 
+       }
+    }
+  \end{algorithm}
+
+  \begin{remark} 
+    
+  \end{remark}
   \newpage  
   \item \textsc{Induction.} We are given the recurrence 
   $$T_n = 2 T_{\frac{n}{a}} + 7 T_{\frac{n}{a^2}} + 1,$$

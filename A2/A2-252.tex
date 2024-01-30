@@ -122,13 +122,19 @@ Therefore, by employing \textsc{Strassen's} algorithm, we can efficiently comput
     \KwIn{A matrix $D[i,j]$ of pairwise distances between cities $1 \leq i,j \leq n$. }
     \KwOut{The optimal star that links the cities.}
     \BlankLine
+    \tcp{initialize M[v, S] for sets of size 1}
+    \For{all $i\in [1,n]$}{
+      \For{all $j\neq i $}{
+      $M[i, \{j\}] \leftarrow D[i,j] $ ;  
+      }
+    }\BlankLine
 \tcp{loop through each central city}
     \For{$v\in [1,n]$}{
     \tcp{loop through each subset size}
-       \For{ all $k\in [1, n-1]$ }{
+       \For{all $k\in [1, n-1]$ }{
        \tcp{loop through each subset of size k excluding the central city}
-          \For{ all $S$ with $|S| = k,\; S \subseteq \{1, ..., n\}\setminus\{v\}$ }{
-              $M[v,S] = \min_{l\in S} \left\{ M[v, S\setminus \{l\}] + \min\{d(l, x) \; : \; x = v 
+          \For{all $S$ with $|S| = k,\; S \subseteq \{1, ..., n\}\setminus\{v\}$ }{
+              $M[v,S] \leftarrow \min_{l\in S} \left\{ M[v, S\setminus \{l\}] + \min\{d(l, x) \; : \; x = v 
               \text{ or } \deg(x) = 1\right\}$; 
           } 
        }
@@ -136,9 +142,15 @@ Therefore, by employing \textsc{Strassen's} algorithm, we can efficiently comput
   \end{algorithm}
 
   \begin{remark} 
-    
+    The above is heavily inspired from the \textit{Held–Karp algorithm}, which was presented in class. 
   \end{remark}
-  \newpage  
+  \textbf{Analysis of the algorithm}
+
+\hspace{24pt} Allow $\Omega$ to represent the set of all vertices (cities). The outer loop iterates through each potential central vertex $v$ of the star, while the subsequent loops systematically explore subsets of $\Omega\setminus {v}$ in a bottom-up fashion. Starting with subsets of size $1$ (i.e., $S = {s}$), we know $M[v,S] = d(v, s)$. We then progress through sets of increasing size, using our knowledge from preceding, smaller sets to obtain an optimal set length, until we reach $M[v, \Omega\setminus v]$,  thereby identifying the optimal star configuration with the central vertex $v$. 
+
+\hspace{24pt} Let's delve into the time complexity analysis. Line 1 executes $n$ times. Lines 2 and 3 represent all possible subsets of a set with $n-1$ vertices, resulting in $2^{n-1}$ iterations. We can safely assume line 4 to be $O(n)$. Combining these components, the overall time complexity is given as $O(n^2 \cdot 2^n)$.
+
+\newpage 
   \item \textsc{Induction.} We are given the recurrence 
   $$T_n = 2 T_{\frac{n}{a}} + 7 T_{\frac{n}{a^2}} + 1,$$
   where $a \geq 2$ is a given integer, and $n$ is restricted to be a power of $a$. We also know that $T_1 = T_a = 1$.\newline
@@ -155,7 +167,7 @@ Therefore, by employing \textsc{Strassen's} algorithm, we can efficiently comput
       & = \frac{9}{a^c} \left( a^n\right)^c \\ 
     \end{split}
   \end{equation*}
-  Where $\frac{9}{a^c} $ is a constant so we conclude that $T_{a^n} = \Omega ((a^n)^c)$. Remains to find the largest such $c.$ 
+  Where $\frac{9}{a^c} $ is a constant so we conclude that $T_{a^n} = \Omega ((a^n)^c)$. Remains to find the largest such $c.$
 \end{proof}
   \end{enumerate}
   \newpage

@@ -165,7 +165,7 @@ Therefore, by employing \textsc{Strassen's} algorithm, we can efficiently comput
 
 \hspace{24pt} Allow $\Omega$ to represent the set of all vertices (cities). The outer loop iterates through each potential central vertex $v$ of the star, while the subsequent loops systematically explore subsets of $\Omega\setminus {v}$ in a bottom-up fashion. Starting with subsets of size $1$ (i.e., $S = {s}$), we know $M[v,S] = d(v, s)$. We then progress through sets of increasing size, using our knowledge from preceding, smaller sets to obtain an optimal set length, until we reach $M[v, \Omega\setminus v]$,  thereby identifying the optimal star configuration with the central vertex $v$. 
 
-\hspace{24pt} Let's delve into the time complexity analysis. Line 4 executes $n$ times. Lines 5 and 6 represent all possible subsets of a set with $n-1$ vertices, resulting in $2^{n-1}$ iterations. We can safely assume line 7 to be $O(n)$. Combining these components, the overall time complexity is given as $O(n^2 \cdot 2^n)$. We note that lines 1 \& 8 run in $O(n)$ time, so they play no significant role in the overall time complexity of the algorithm. 
+\hspace{24pt} Let's delve into the time complexity analysis. Line 4 executes $n$ times. Lines 5 and 6 represent all possible subsets of a set with $n-1$ vertices, resulting in $2^{n-1}$ iterations. We can safely assume line 7 to be $O(n^2)$, as we are looping through each $l \in \Omega$, and for each $l$, we loop through each endpoint, of which we can assume there are at most $n$. Combining these components, the overall time complexity is given as $O(n^3 \cdot 2^n)$. We note that lines 1 \& 8 run in $O(n)$ time, so they play no significant role in the overall time complexity of the algorithm. 
 
 \newpage 
   \item \textsc{Induction.} We are given the recurrence 
@@ -173,19 +173,113 @@ Therefore, by employing \textsc{Strassen's} algorithm, we can efficiently comput
   where $a \geq 2$ is a given integer, and $n$ is restricted to be a power of $a$. We also know that $T_1 = T_a = 1$.\newline
   \begin{enumerate}
     \item[\it (a)] $T_n = \Omega(n^c)$ for some constant $c.$
-\begin{proof} For the base case, let $n = a^2$, then, 
-  $$T_{a^2} = 2 T_a + 7T_1 + 1 = 2 + 7  + 1 = \Omega(1) = \Omega(n^0), $$
-  Now, assume $T_{a^k} = \Omega ((a^k)^c)$, for any $2\leq k < n$, then we have 
-  \begin{equation*}
-    \begin{split}
-      T_{a^n} &= 2 T_{a^{n-1}} + 7T_{a^{n-2}} + 1\\ 
-      &\leq 2 ((a^{n-1})^c) + 7((a^{n-2})^c) + 1 \quad [\text{by I.H.}]\\ 
-      & \leq 9 (a^{n-1})^c \\
-      & = \frac{9}{a^c} \left( a^n\right)^c \\ 
-    \end{split}
-  \end{equation*}
-  Where $\frac{9}{a^c} $ is a constant so we conclude that $T_{a^n} = \Omega ((a^n)^c)$. Remains to find the largest such $c.$
+\begin{proof} 
+\textbf{Base Case: } We consider the base case where $n=a^2$, then, 
+\begin{align*}
+    T_{a^2} &= 2T_{\frac{a^2}{a}} + 7T_{\frac{a^2}{a^2}} + 1 \\
+    &= 2T_{a} + 7T_{1} + 1 \\
+    &= 2(1) + 7(1) + 1 \\
+    &=10 \\
+\end{align*}
+We will denote the following to get our lower bound, 
+\begin{align*}
+    T_{a^2} = 10 \ge \alpha {(a^2)}^c
+\end{align*}
+Thus we will let $\alpha = \frac{1}{{(a^2)}^c}$, so the inequality holds. 
+
+
+
+\textbf{Induction Step: } Here we will be supposing that $T_n \ge \alpha n^c$. 
+
+\begin{align*}
+    T_n &= 2T_{\frac{n}{a}} + 7T_{\frac{n}{a^2}} + 1 \\
+    &\ge 2 \alpha {\left(\frac{n}{a} \right)}^c + 7 \alpha {\left(\frac{n}{a} \right)}^c + 1 \\
+    &\ge 2 \alpha {\left(\frac{n}{a} \right)}^c + 7 \alpha {\left(\frac{n}{a} \right)}^c \\ 
+    &= \alpha n^c \left(\frac{2}{a^c} + \frac{7}{a^{2c}} \right) \\
+\end{align*}
+
+Thus, we must find $c$ such that
+\begin{align*}
+    \frac{2}{a^c} + \frac{7}{a^{2c}} &\le 1 \\
+    \frac{1}{a^c}\left(2 + \frac{7}{a^c} \right) &\le 1 \\
+\end{align*}
+Let $x = a^c$, 
+\begin{align*}
+    \frac{1}{x} \left(2 + \frac{7}{x} \right) &\le 1 \\
+    \left(2 + \frac{7}{x} \right) &\le x \\
+    x - \frac{7}{x} - 2 &\ge 0 \\
+    x^2 - 2x -7 &\ge 0 \\
+\end{align*}
+
+By quadratic formula, 
+\begin{align*}
+    x &\ge \frac{2 \pm \sqrt{{(-2)}^2 - 4(1)(-7)}}{2} \\
+    &= \frac{2 \pm \sqrt{32}}{2} \\
+    &= \frac{2 \pm 4\sqrt{2}}{2} \\
+    &= 1 \pm 2\sqrt{2} \\
+\end{align*}
+
+Since we know that $x > 0$, we take the positive $x$ from the quadratic formula. Therefore,
+\begin{align*}
+    x &= a^c = 1 + 2\sqrt{2} \\
+    \log_{a}a^c &= \log_{a}(1 + 2\sqrt{2}) \\
+    c &= \log_{a}(1 + 2\sqrt{2}) \\
+\end{align*}
+
+So we have found our $c$. 
+
 \end{proof}
+    \item Show by induction that $T_n = O(n^c)$ for the same maximal $c$ found above. 
+    \begin{proof} 
+      \textbf{Base Case: }
+We consider the base cases for the upper bound, we know that 
+\begin{align*}
+    T_1 &= 1 \\
+    T_a &= 1 \\
+\end{align*}
+and we want to prove that $T_n = O(n^c)$
+thus we show $\exists \alpha \in \R^{+}$ such that 
+\begin{align*}
+    T_1 \le \alpha {1}^{c} - 1 = \alpha {1}^{\log_a (1 + 2\sqrt{2})} - 1 = \alpha (1) - 1 = \alpha - 1 \quad \text{where } \alpha \ge 2
+\end{align*}
+and similarly,
+\begin{align*}
+    T_a \le \alpha a^{\log_{a}(1 + 2\sqrt{2})} - 1 &= \alpha (1 + 2\sqrt{2}) - 1 \\
+    &= \alpha + 2\alpha \sqrt{2} - 1 \\
+    &= (\alpha - 1) + 2\alpha \sqrt{2} \quad \text{where } \alpha \ge 2
+\end{align*}
+Which the inequality will hold $\forall n$ through induction. 
+
+\textbf{Induction step: } Since $n$ is a power of $a$, we can express it as $x = a^k, \ k \in \N$. Let $y \in \N \ s.t \ y \ge 2$, it follows that $\forall k \in \{0, 1, \ldots, y-1 \}$, 
+\begin{align*}
+    T_n = T_{a^k} \le \alpha {(a^k)}^c - 1 &= \alpha {(a^c)}^k - 1 \\
+    &= \alpha {(a^{\log_{a}1 + 2\sqrt{2}})}^k -1 \\
+    &= \alpha {(1 + 2\sqrt{2})}^k -1 \\
+\end{align*}
+where $\alpha \ge 2$ from our base case. Therefore assuming the induction hypothesis and letting $n = a^y$, 
+\begin{align*}
+    T_n &= T_{a^y} = 2T_{a^{y - 1}} + 7T_{a^{y - 2}} + 1 \\
+    &\le 2\alpha {(a^{y-1})}^c - 2 + 7\alpha {(a^{y-2})}^c - 7 + 1 \quad \text{by induction hypothesis} \\
+    &= 2\alpha {(1 + 2\sqrt{2})}^{y-1} + 7\alpha {(1 + 2\sqrt{2})}^{y-2} - 8 \\
+    &= \alpha {(1 + 2\sqrt{2})}^{y-1} \left(2 + \frac{7}{(1 + 2\sqrt{2})} \right) - 8 \\
+    &= \alpha {(1 + 2\sqrt{2})}^{y} - 8 \quad \text{*see below for equality} \\
+    &\le \alpha {(1 + 2\sqrt{2})}^{y} - 1
+\end{align*}
+Thus we are done. 
+
+\textbf{*} In the above part of the induction is used the fact that, 
+\begin{align*}
+    2 + \frac{7}{1 + 2\sqrt{2}} = 1 + 2\sqrt{2}
+\end{align*}
+We show this is the case, 
+\begin{align*}
+    2 + \frac{7}{1 + 2\sqrt{2}} &= \frac{2(1 + 2\sqrt{2}) + 7}{1 + 2\sqrt{2}} \\
+    &= \frac{2 + 4\sqrt{2} + 7}{1 + 2\sqrt{2}} \\
+    &= \frac{9 + 4\sqrt{2}}{1 + 2\sqrt{2}}\left(\frac{1 + 2\sqrt{2}}{1 + 2\sqrt{2}} \right) \\
+    &= \frac{(9 + 4\sqrt{2})(1 + 2\sqrt{2})}{9 + 4\sqrt{2}} \\
+    &= 1 + 2\sqrt{2} \\
+\end{align*}
+    \end{proof}
   \end{enumerate}
   \newpage
   \item  \textsc{Sorting with Duplicates.} \begin{enumerate}

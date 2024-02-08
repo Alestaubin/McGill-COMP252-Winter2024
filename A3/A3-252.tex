@@ -183,36 +183,23 @@
     for $n \geq n_0$, for some positive numbers $a, b, n_0$. Determine suitable values for these numbers. Compare this with your answer in \textit{(i)} and conclude that the decision tree bound for this problem is rather weak.
   \end{enumerate}
   \newpage
-  \item \textsc{Adversarial lower bound.}
+  \item \textsc{Adversarial lower bound.} Using the method of adversaries, show that the lower bound for this problem is 7 when $n = 5$. 
+  \sol 
+  \textsc{Adversary Strategy:} The adversary always answers NO, unless it has to answer YES.
+
+  \textbf{Claim}: This strategy always yields at least 7 comparisons.
+  \begin{proof} 
+    Denote the set of monkeys by $\Omega := \{a,b, c,d,e\}$. There are two cases where the adversary must answer "yes" to a comparison between two monkeys. Without loss of generality, let $a \in $ Species\_1 and $x\in \Omega$, then the adversary will be forced to answer yes if,
+    \begin{enumerate}
+      \item[\it (i)] $x$ was already compared to Species\_2 and Species\_3, and the adversary answered "no" to both.
+      \item[\it (ii)] $x$ was already compared to Species\_1 and the adversary answered "yes". 
+    \end{enumerate}
+    Notice that in either case, the algorithm doesn't gain any new information. We may therefore assume that the adversary will never be forced to answer "yes", as any good algorithm would not waste comparisons to obtain information it already knows. 
+  \end{proof}
+
+
   \newpage
   \item \textsc{Lower bounds by the method of adversaries, and an algorithm.}
 
 \end{enumerate}
 \end{document}
-
-    \begin{forest}
-  for tree={
-    edge path={
-      \noexpand\path[\forestoption{edge}]
-        (\forestOve{\forestove{@parent}}{name}.parent anchor) -- +(0,-10pt) -|
-        (\forestove{name}.child anchor)\forestoption{edge label};
-    },
-    align=center,
-    l sep=10mm,
-    s sep=20mm,
-    if n children=0{
-      font=\itshape
-    }{},
-  }
-  [{a = b?} 
-    [Option A
-      [Outcome A1]
-      [Outcome A2]
-    ]
-    [Option B
-      [Outcome B1]
-      [Outcome B2]
-    ]
-  ]
-
-\end{forest}

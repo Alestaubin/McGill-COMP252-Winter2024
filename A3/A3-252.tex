@@ -196,7 +196,13 @@
     \end{enumerate}
     Notice that in either case, the algorithm doesn't gain any new information. We may therefore assume that the adversary will never be forced to answer "yes", as any good algorithm would not waste comparisons to obtain information it already knows. 
     
-    \hspace{24pt}Therefore, our claim is that no matter the comparisons asked (except those that are useless, as above), answering "no" to each will always require at least 7 comparisons before the 5 monkeys are classified. We prove this using \textit{brute force}, i.e. by trying to find a way for the 5 monkeys to be correctly classified in 6 comparisons, failing to do so, and concluding that at least 7 will be required. Since classifying the first 2 monkeys always takes just one comparison, the remaining 3 monkeys must therefore be classified with 5 comparisons. Using the algorithm in $(i)$ clearly yields 6 additional comparisons (2 for each of $\{c,d,e\}$), so we try other ways. Without loss of generality, there are 3 possible strategies: 
+    \hspace{24pt}Therefore, our claim is that no matter the comparisons asked (except those that are useless, as above), answering "no" to each will always require at least 7 comparisons before the 5 monkeys are classified. We prove this using \textit{brute force}, i.e. by trying to find a way for the 5 monkeys to be correctly classified in 6 comparisons, failing to do so, and concluding that at least 7 will be required. Since classifying the first 2 monkeys always takes just one comparison, the remaining 3 monkeys must therefore be classified with 5 comparisons. Let,
+    \begin{enumerate}
+      \item $X : =\{a, b\}$ be the two monkeys compared at first;  
+      \item $Y:= \{c,d,e\}$ the 3 remaining monkeys that need to be classified. 
+    \end{enumerate}
+
+    We call \textit{internal} the comparisons that are made within $Y$, and \textit{external} those that are made between $X$ and $Y$. Making only external comparisons is equivalent to the algorithm in $(i)$, and clearly yields 6 additional comparisons (2 for each of $\{c,d,e\}$). So, we try and make internal comparisons. Without loss of generality\footnote{The reason why it's \textit{wlog} is that the order that the comparisons are made does not matter, and nor does which monkeys they are made between (by relabelling).}, there are 3 possible strategies: 
     \begin{enumerate}
       \item[\it (i)] 3 internal comparisons: $c\&d, \; d\&e, e\&c$ to obtain that they are all different species. But then at least 3 external comparisons will be required to classify them: $c\&a,\; c\&b,\; d\&a$ (recall that each comparison returns "not equal" by our chosen adversary). 
       \item[\it (ii)] 2 internal comparisons: $c\&d, \; d\&e$ to get that $c\neq d$, $d \neq e$ and $e?d.$ Then, 4 external comparisons must be made: $c\&a,\; c\&b, \;d\&a,\; e\&a.$

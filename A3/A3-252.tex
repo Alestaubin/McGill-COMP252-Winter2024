@@ -22,7 +22,7 @@
 
 %images
 \usepackage{graphicx}
-\graphicspath{ {./images/} }
+\graphicspath{ {./graphics/} }
 % to include an image, do: 
 %    \begin{center}
 %    \includegraphics[scale=0.20]{graph.jpg}
@@ -85,6 +85,9 @@
 \DeclareMathOperator{\aff}{aff}
 \DeclareMathOperator{\ri}{ri}
 \DeclareMathOperator{\argmin}{argmin}
+
+% --- Algos --- %
+\SetKwProg{Fn}{Function }{\string:}{}
 
 % --- Header --- %
 \renewcommand{\headrulewidth}{.4mm} % header line width
@@ -173,7 +176,7 @@
 \end{proof}
      \item[\it (iii)] Using a decision tree-based method, show that the lower bound for this problem is 6 when $n = 5$.
      \begin{proof} 
-      The algorithm outputs three sets of monkeys of identical species. For each monkey, there are three possibilities of species, hence $3^5$ total permutations. Yet, this accounts for the order of the species, which we don't care about. That is, it shouldn't matter whether the \textit{popa langurs} are grouped in Species\_1, Species\_2, or Species\_3. To remove this unwanted notion of order, we divide by $3!$. It follows that the total number of possible outputs of the algorithm is given by
+      The algorithm outputs three sets of monkeys of identical species. For each monkey, there are three possibilities of species, hence $3^5$ total permutations. Yet, this accounts for the order of the species, which we don't care about. That is, it shouldn't matter whether the \textit{popa langurs} are grouped in Species\_1, Species\_2, or Species\_3. To remove this unwanted notion of order, we divide by $3!$. It follows that the total number of possible outputs for this problem is given by
     $$\frac{3^n}{3!} $$
        By part (ii), each leaf corresponds to a different output, so we have a tree with $\frac{3^n}{3!}$ leaves. Thus, by the method of decision trees, the lower bound is
     $$\left\lceil\log_{2}\left( \frac{3^5}{3!} \right)\right\rceil = 6$$
@@ -181,6 +184,8 @@
      \end{proof}
   \item[\it (iv)] For general $n,$ show that the decision tree lower bound is at least $an- b$ and at most $an + b$
     for $n \geq n_0$, for some positive numbers $a, b, n_0$. Determine suitable values for these numbers. Compare this with your answer in \textit{(i)} and conclude that the decision tree bound for this problem is rather weak.
+    \sol 
+     For a general $n,$ the number of leaves in the decision tree is upper bounded by $3^n$,  
   \end{enumerate}
   \newpage
   \item \textsc{Adversarial lower bound.} Using the method of adversaries, show that the lower bound for this problem is 7 when $n = 5$. 
@@ -213,7 +218,111 @@
 
 
   \newpage
-  \item \textsc{Lower bounds by the method of adversaries, and an algorithm.}
+  \item \textsc{Lower bounds by the method of adversaries, and an algorithm.} Let the data
+consist of an $n \times n\times n$ matrix of different integers that are sorted along all three axes from small to large. We have a ternary comparison oracle at our disposal. For a given integer $x$, we are asked to verify whether $x$ is an element of the matrix. The only comparisons that are allowed are between $x$ and matrix elements. 
+\begin{enumerate}
+  \item[\it (a)] Using the method of adversaries, derive a lower bound (called $L(n)$) for the worst-case number of times the oracle has to be consulted to perform a successful search for $x$. 
+  \sol 
+  We first define an adversary strategy for the $2D$ case. Suppose you have a $n\times n$ ordered matrix of the form: 
+  $$A = \begin{pmatrix}
+    a_{1,1} & a_{1,2} & a_{1,3} & \hdots & a_{1,n} \\ 
 
+    a_{2,1} & a_{2,2} & a_{2,3} & \hdots & a_{2,n} \\ 
+
+    a_{3,1} & a_{3,2} & a_{3,3} & \hdots & a_{3,n} \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+    
+    a_{n,1} & a_{n,2} & a_{n,3} & \hdots & a_{n,n} \\ 
+  \end{pmatrix}$$
+  Where $a_{1,1}$ is the smallest entry and $a_{n,n}$ the greatest. 
+
+  \textsc{2D Adversary strategy:} when asked to compare $x$ with the entry $a_{i,j}$, the adversary will answer : 
+  \begin{enumerate}
+    \item $(x > a_{i,j})$, if $i + j \leq n + 1$; 
+    \item $(x < a_{i,j})$, if $i+ j > n+ 1$; 
+    \item $(x = a_{i,j})$, if $a_{i,j}$ is the last element left in the matrix. 
+  \end{enumerate}
+  In other words, if the algorithm asks about a matrix entry below the \textit{bottom-left to top-right diagonal,} answer \textbf{smaller}, and if it is on, or above it, answer \textbf{greater}. 
+    \begin{remark}[1]
+    We say an entry $a_{i,j} \in A$ is \textit{removed} from $A$ when the adversary confirms that it is not equal to $x$.   
+  \end{remark}
+  \begin{remark}[2]
+    Notice that if the algorithm asks about $a_{i,j}\in A,$ and that $i + j \leq n + 1$, then for every $k\leq i, \; l \leq j,$ $a_{k,l}$ will be removed. 
+  \end{remark}
+  \hspace{24pt}Now, by the way our adversary is defined, from the point of view of the algorithm, the only way to remove elements of the \textit{bottom-left to top-right diagonal} is to compare each of its entries to $x$. This process is also sufficient to remove the upper left half of the matrix. Thus, removing every entry $a_{i,j}$ such that $j+ i \leq n+1$ takes \textbf{at least} $n$ steps. By an analogous argument, removing the remaining entries will take at least $n-1$ steps (by comparing $x$ with each entry directly below the diagonal). 
+  Therefore, this adversary gives a lower bound of $2n -1.$
+  \begin{remark}[3]
+    An alternate way to view the above adversary is that it picks the answer that minimizes the area of the square of entries removed.
+\end{remark}
+  \textsc{3D Adversary strategy:} We use a similar strategy as in the 2D case, but instead of minimizing an area, as stated in \textit{Remark 3}, we minimize a volume. Let $\Omega = \{<, >, =\}$, and let 
+  $$F: [1,n]\times [1, n]\times [1,n] \subseteq \mathbb{N}^3 \to \Omega $$
+be given by 
+  $$F(i,j,k) = 
+  \begin{cases}
+    <, &\text{ if } i \times j \times k \leq (n+1 - i )\times (n+1 - j ) \times (n+1 -k) \\ 
+    >, &\text{ if } i \times j \times k > (n+1 - i )\times (n+1 - j ) \times (n+1 -k) \\ 
+    =, &\text{ if } a_{i,j,k} \text{ is the last entry not removed. }
+  \end{cases} $$
+ 
+  \newpage 
+  \item[\it (b)] Give an algorithm that takes worst case time $O(L(n))$. 
+  \sol 
+  \begin{algorithm}
+    \caption{An algorithm to find if $x$ is in a 3D ordered matrix, in $O(L(n))$. }
+    \SetKwRepeat{Do}{do}{while} %do-while loop macro
+    \SetKwInput{KwOut}{Output}
+    \SetKwInput{KwIn}{Input}
+    \SetKwFunction{matsolve}{Is\_x\_in\_this\_2D\_Matrix}
+    \SetKwData{mat}{Matrix\_2D}
+    \SetKwData{x}{x}
+    \SetKwData{col}{col}    
+    \SetKwData{row}{row}   
+    \SetKwData{true}{True}   
+    \SetKwData{false}{False}   
+
+    \KwIn{ A sorted $n \times n \times n$ matrix $M$ of unique integers and an integer $x$. That is, $M[0][0][0]$ is the smallest element and $M[n-1][n-1][n-1]$ the biggest. }
+    \KwOut{True or False, whether $x \in M$}
+    \BlankLine
+
+    \Fn{\matsolve{\mat}}{
+    \tcp{start the iteration at top right corner of matrix}
+    $\row \gets 0$;\\ 
+    $\col \gets n-1 $ ; \\  
+    \While{$\col \geq 0 \text{ and } \row \leq n-1$}{
+      \If{$\x = \mat[\row][\col]$}{
+      \Return \true;
+      }\ElseIf{$x< \mat[\row][\col]$}{
+      $\col \gets \col -1$; 
+      }\Else{
+      $\row \gets \row + 1$; 
+      }
+      }\Return \false;
+    }
+    \BlankLine
+    \tcp{ go through each 2D matrix in the 3D matrix, starting with the top one.}
+    \For{all $k \in [0,n-1]$}{
+    \tcp{if x > M[n-1][n-1][n-1], no need to check this 2D matrix}
+    \If{$\x \leq M[n-1][n-1][n-1]$}{
+      \If{\matsolve{M[k]}}{
+      \Return \true;
+      }
+    }
+    }\Return \false;
+   
+    
+  \end{algorithm}
+  \begin{remark} 
+    In the above algorithm, the time complexity of the function at line 1 is easily seen to be $O(n)$, as it takes at most $2n$ steps. Now, since this function will be called at most $n$ times (once for each level of the 3D matrix), we conclude that the overall time complexity of the algorithm is $O(n^2)$, as desired. 
+\end{remark}
+
+\newpage 
+\begin{figure}
+\label{matrix}
+    \centering
+    \includegraphics[scale=0.20]{3dmatrix.jpg}
+    \caption{The 3D matrix in problem 3.}
+\end{figure}
+
+\end{enumerate}
 \end{enumerate}
 \end{document}

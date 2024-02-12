@@ -1272,6 +1272,10 @@ INPUT /usr/local/texlive/2023/texmf-dist/fonts/vf/adobe/times/ptmr8t.vf
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/vf/adobe/times/ptmri8t.vf
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/times/ptmri8r.tfm
+INPUT ./graphics//graph.jpg
+INPUT ./graphics//graph.jpg
+INPUT ./graphics//graph.jpg
+INPUT ./graphics//graph.jpg
 INPUT ./graphics//3dmatrix.jpg
 INPUT ./graphics//3dmatrix.jpg
 INPUT ./graphics//3dmatrix.jpg

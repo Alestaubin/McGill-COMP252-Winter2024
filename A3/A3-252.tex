@@ -97,14 +97,14 @@
 \fancyhfoffset[L]{1cm} % left extra length
 \fancyhfoffset[R]{1cm} % right extra length
 \rhead{\today}
-\lhead{\it Alexandre St-Aubin \& Dylan Telio}
+\lhead{\it Alexandre St-Aubin (261115785) \& Dylan Telio (261119191)}
 \rfoot{}
 
 % --- Title Page --- % 
 \setlength{\droptitle}{-6em}
 
 \title{\textsc{Assignment 3 -- COMP 252}}  
-\author{\it Alexandre St-Aubin and Dylan Telio}
+\author{\it Alexandre St-Aubin (261115785) and Dylan Telio (261119191)}
 \date{\today}
 
 \begin{document}
@@ -272,7 +272,15 @@ be given by
   where $F$ is exactly our adversary for the 3D case. 
 
   \textbf{Claim :} The adversary defined by $F$ gives a lower bound of $O(n^2).$ 
- 
+
+  
+  The set of points that must be checked looks similar to the purple plane in figure 1. The area of this plane is $O(n^2)$. The reason why all points on this plane must be checked is that they are the ones that won't be removed unless they are checked directly.
+ \begin{figure}
+\label{matrix}
+    \centering
+    \includegraphics[scale=0.40]{graph.jpg}
+    \caption{  }
+\end{figure}
   \newpage 
   \item[\it (b)] Give an algorithm that takes worst case time $O(L(n))$. 
   \sol 

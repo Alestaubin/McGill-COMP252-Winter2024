@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1708986896 "A4_252.tex" "A4_252.pdf" "A4_252" 1708986897 0
+["pdflatex"] 1708990554 "A4_252.tex" "A4_252.pdf" "A4_252" 1708990555 0
   "/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1136849721 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -239,8 +239,8 @@
   "/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1693683507 4623355 b8cad38412faebe1ce5b780a45db67bd ""
   "/usr/local/texlive/2023/texmf-var/web2c/pdftex/pdflatex.fmt" 1693683423 7883466 0daf13f68d70d6b799279728d2d79159 ""
   "/usr/local/texlive/2023/texmf.cnf" 1678822455 577 1b2b1af17af2508fb20dd85783af4050 ""
-  "A4_252.aux" 1708986897 310 e343ac26c98a9b7e4c6e40ead6b22e04 "pdflatex"
-  "A4_252.tex" 1708986893 5902 9245dcf235d2128fb155a1ea71d4cfdb ""
+  "A4_252.aux" 1708990554 310 e343ac26c98a9b7e4c6e40ead6b22e04 "pdflatex"
+  "A4_252.tex" 1708990552 6335 cad6e6ae1c60f6787a2423a36e1d3f4b ""
   (generated)
   "A4_252.aux"
   "A4_252.log"

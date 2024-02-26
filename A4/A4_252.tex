@@ -118,7 +118,7 @@
   \newpage 
   \item \textsc{Greedy algorithm}. On a flat table, we have placed n disks of radii $r_1, ..., r_n$, numbered from left to right. We push them together without creating overlap, as in the figure below. Give an $O(n)$ time algorithm to compute the size of the smallest axis-aligned rectangle that can hold the disks.
   \sol 
-
+  See the algorithm on the next page. We show that its complexity is $O(n)$. To begin, the outermost loop at line 8 iterates a total of $n$ times. The maximum number of elements pushed onto the stack is also $n$ (since at most one is pushed at each iteration), hence an equal number is removed, maintaining the overall $O(n)$ complexity. Finally, as we traverse through each circle once more at the end of the algorithm, the complexity remains $O(n)$.
   \begin{algorithm}
     \caption{Greedy circle packing}
     \SetKwProg{Fn}{Function }{\string:}{}
@@ -127,15 +127,15 @@
     \SetKwInput{KwIn}{Input}
     \SetKwFunction{rad}{Radius}
     \SetKwFunction{cen}{centre\_dist}
-    \SetKwData{dec}{decreasing\_radii}
+    \SetKwData{dec}{possible\_adjacent\_stack}
     \SetKwData{a}{a}
     \SetKwData{b}{b}
     \SetKwData{arr}{array}    
     \SetKwData{ltok}{left\_to\_circle}   
     \SetKwData{maxd}{max\_d}   
     \SetKwData{len}{length}  
-    \SetKwData{rm}{remove}   
-    \SetKwFunction{makenull}{MAKENULL}
+    \SetKwData{wid}{Width}   
+    \SetKwFunction{mn}{MAKENULL}
     \SetKwFunction{top}{TOP}
     \SetKwFunction{pop}{POP}
     \SetKwFunction{push}{PUSH}
@@ -144,51 +144,53 @@
     \KwOut{The minimum width of a rectangle that can hold the disks.}
     \BlankLine
 
-    \tcp{\color{blue}returns the radius of the circle a}
+    \tcp{\color{blue}radius of the circle a}
     \Fn{\rad{circle \a}}{
         \Return radius of \a;
     }
     \BlankLine
 
-    \tcp{\color{blue}returns the distance between the centres of a and b if they are pushed together.}
+    \tcp{\color{blue}distance between the centres of a and b if they are pushed together.}
     \Fn{\cen{circle \a, circle \b}}{
       \Return $ \sqrt{(\rad(a)+\rad(b))^2 -(\rad(a)-\rad(b))^2};$
     }
     \BlankLine 
     \tcp{\color{blue}largest subarray of $\Omega$ ending with $k$, decreasing in radii. }
-    $\dec []\gets new \; \arr \text{ of circles}; $\\
+    $\mn (\dec); $\\
     \BlankLine 
     \tcp{\color{blue}distance from the left side of the rectangle to circle at index}
     $\ltok[] \gets new \; \arr;$\\     
     \BlankLine
     $\ltok[0] \gets 0;$\\ 
+
     \For{$i\gets 1 \text{ to } n$}{
       \eIf{$i=1$}{
-        $\ltok[i] \gets \rad(i);$\\
-        $\dec[i] \gets i;$\\ 
+        $\ltok[i-1] \gets \rad(i);$\\
+        $\push(i, \dec)$\\ 
       }{
-        $\maxd \gets 0;$\\
-        \tcp{\color{blue}iterate through array of decreasing radii, starting with the smallest, until larger radius is hit}
-        \For{$j \gets \len(\dec)-1 \text{ to } j \gets 0$}{ 
-        \tcp{\color{blue}get the distance from the left side of the rectangle to the centre of circle i when it is adjacent to circle at \dec[j]}
-          $\maxd \gets \max \{\maxd, \ltok[\dec[j]]+ \cen(\dec[j],i) \}$;\\
-          \If{$\rad(i)\geq \rad(j)$}{
-            \tcp{\color{blue}if we encounter a circle of larger radius than i, stop checking distances, as there would clearly be an overlap.}
-            \text{exit for loop;}
-          }
-        }
-        \tcp{\color{blue} \maxd holds the maximum distance occurring when circle i is adjacent to a circle in \dec. This}
-        $\ltok[i] \gets \maxd;$\\ 
-        \BlankLine 
-        \tcp{\color{blue}update array of decreasing radii.}
-        \While{$\rad(i) \geq \rad(\dec[-1])$}{
-          $\rm (\dec[-1]);$
-        }
-        $ \dec[\len(\dec)] \gets i$;\\ 
-        }
+        \tcp{\color{blue} initialize max distance between left side of rectangle and circle i to \rad(i) to account for the case where the circle would touch the side.}
+        $\maxd \gets \rad(i);$\\
+        \tcp{\color{blue} \pop each circle on the stack that's smaller than i.}
+      \While{$\rad(\top{\dec}) \leq \rad(i)$}{
+        $\maxd \gets \max\{\maxd, \ltok(\pop{\dec})+ \cen(i, \dec(j)) \} ;$
       }
-   \Return \ltok 
+      \tcp{\color{blue} check first circle that's larger, but keep it on the stack}
+      $\maxd \gets \max\{\maxd, \ltok(\top{\dec})+ \cen(i, \dec(j)) \} ;$\\ 
+      \tcp{\color{blue}push i to stack, keeping the decreasing order}
+      $\push(i, \dec);$\\ 
+        \tcp{\color{blue} \maxd is the distance from the left side of the rectangle to the center of circle i when it is pushed as much as possible without overlapping}
+        $\ltok[i-1] \gets \maxd;$\\ 
+      }
+      }
+    \tcp{ \color{blue} find the width}
+    $\wid \gets 0;$\\ 
+    \For {$i \gets n-1 \text{ to } 0$}{
+      \If{$\ltok[i]+ \rad(i)>\wid$}{
+          $\wid \gets\ltok[i]+ \rad(i);$\\ 
+      }
+    }\Return \wid;
     
   \end{algorithm}
+
 \end{enumerate}
 \end{document}

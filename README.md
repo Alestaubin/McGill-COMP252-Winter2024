@@ -4,4 +4,6 @@
 
 [Assignment 2](A2/A2-252.pdf) : 40/40
 
-[Assignment 3](A3/A3-252.pdf) :
+[Assignment 3](A3/A3-252.pdf) : 30/30 
+
+[Assignment 4](A4/A4-252.pdf) : 

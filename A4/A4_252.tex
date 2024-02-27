@@ -100,7 +100,7 @@
 \fancyhfoffset[R]{1cm} % right extra length
 \rhead{\today}
 \lhead{\it \nameone \nametwo}
-%\fancyfoot[R]{Page \thepage \hspace{1pt} of \pageref{LastPage}}
+\fancyfoot[R]{Page \thepage \hspace{1pt} of \pageref{LastPage}}
 
 % --- Title Page --- % 
 \setlength{\droptitle}{-6em}
@@ -136,7 +136,7 @@
     \SetKwData{len}{length}  
     \SetKwData{wid}{Width}   
     \SetKwFunction{mn}{MAKENULL}
-    \SetKwFunction{top}{TOP}
+    \SetKwFunction{top}{PEEK}
     \SetKwFunction{pop}{POP}
     \SetKwFunction{push}{PUSH}
 
@@ -163,18 +163,18 @@
     \BlankLine
     $\ltok[0] \gets 0;$\\ 
 
-    \For{$i\gets 1 \text{ to } n$}{
+    \For{all $i \in \Omega$}{
       \eIf{$i=1$}{
         $\ltok[i-1] \gets \rad(i);$\\
         $\push(i, \dec)$\\ 
       }{
-        \tcp{\color{blue} initialize max distance between left side of rectangle and circle i to \rad(i) to account for the case where the circle would touch the side.}
+        \tcp{\color{blue} initialize \maxd, the maximum distance between left side of rectangle and circle i to \rad(i). to account for the case where the circle would touch the side of the rectangle.}
         $\maxd \gets \rad(i);$\\
         \tcp{\color{blue} \pop each circle on the stack that's smaller than i.}
       \While{$\rad(\top{\dec}) \leq \rad(i)$}{
         $\maxd \gets \max\{\maxd, \ltok(\pop{\dec})+ \cen(i, \dec(j)) \} ;$
       }
-      \tcp{\color{blue} check first circle that's larger, but keep it on the stack}
+      \tcp{\color{blue} peek the first circle that's larger, but keep it on the stack}
       $\maxd \gets \max\{\maxd, \ltok(\top{\dec})+ \cen(i, \dec(j)) \} ;$\\ 
       \tcp{\color{blue}push i to stack, keeping the decreasing order}
       $\push(i, \dec);$\\ 
@@ -191,6 +191,104 @@
     }\Return \wid;
     
   \end{algorithm}
+ \newpage 
+  \item \textsc{Augmented data structures.} Show how to maintain a dynamic set of numbers that
+supports the operation \texttt{min-gap}, which gives the magnitude of the difference of the two closest numbers in a set of numbers, A. For example, if $A = \{1, 5, 9, 15, 18, 22\}$, then \texttt{min-gap} $(A)$ returns $18 - 15 = 3$, since 15 and 18 are the two closest numbers in $A$. Make the operations \texttt{insert, delete, search}, and \texttt{min-gap} as efficient as possible, and analyze the running times. Be concise! 
+\newpage 
+\item \textsc{The node of smallest tension in a tree.} Given is an unrooted free tree of size $n$.
+The nodes are labeled from $1$ to $n$, and for each node, we have a linked list of its neighbors. When a node $u$ is deleted, it breaks the tree up into a forest of disjoint trees, say $T_1, ... , T_k$. Let the sizes of these trees be denoted by $|T_1|,... , |T_k|$. We define the tension of $u$ as $\max_{1 \leq i \leq k} T_i$. The objective is to find a node $u$ of smallest tension. Intuitively, it should be near the “center” of the tree. Write an algorithm
+that takes $O(n)$ worst-case time.
+\sol 
+See the algorithm on the next page. The complexity is easily seen to be $O(n)$, given that line 21 executes at most $n$ times, and both loops at lines 28 and 34 iterate $n$ times. Additionally, the post\_order\_traversal function is $O(n)$, as it traverses every node in the tree. 
+
+The algorithm uses the following data structure, 
+\begin{equation*}
+  \begin{split}
+    &\texttt{struct NODE}\\ 
+    &\{\\ 
+    &\texttt{linkedList } \text{neighbour}; \\ 
+    &\texttt{int } \text{tension}; \\ 
+    &\texttt{int } \text{size} ;\\ 
+    &\texttt{bool }\text{visited}; \\
+    &\}\\
+  \end{split}
+\end{equation*}
+
+\begin{algorithm}
+    \caption{Smallest Tension}
+    \SetKwProg{Fn}{Function }{\string:}{}
+    \SetKwInput{KwOut}{Output}
+    \SetKwInput{KwIn}{Input}
+    \SetKwFunction{stru}{struct}
+    \SetKwData{true}{True}
+    \SetKwData{chi}{child}
+    \SetKwData{parent}{parent}
+    \SetKwData{ten}{tension}
+    \SetKwData{size}{size}
+    \SetKwData{visited}{visited}    
+    \SetKwData{root}{root}
+    \SetKwData{toproot}{TopRoot}
+    \SetKwData{nei}{neighbours}   
+    \SetKwData{false}{False}  
+    \SetKwData{null}{NULL}   
+    \SetKwFunction{mn}{MAKENULL}
+    \SetKwFunction{top}{PEEK}
+    \SetKwFunction{pop}{POP}
+    \SetKwFunction{isemp}{ISEMPTY}
+    \SetKwFunction{potrav}{post\_order\_traversal}
+    \SetKwFunction{exit}{exit}
+    \SetKwFunction{init}{initialize}
+    \SetKwData{temp}{temp}
+    \SetKwData{continue}{continue}
+
+    \KwIn{A list $\Omega := \{1,2,3,...,n\}$ of nodes, and for each node, a linked list of neighbours.}
+    \KwOut{The node of minimum tension.}
+\BlankLine
+\Fn{\potrav{\root}}{
+    $\root.\visited \gets \true;$\\
+    \If{$|\root.\nei| = 1$}{
+        $\root.\size \gets 1; $\\ 
+        $\root.\ten \gets n-1;$\\
+        \Return ;
+    }
+    \ForAll{ \texttt{NODE} $\chi$ in $\root.\nei$}{
+        \If{$\chi.\visited = \true$}{\continue\tcp{\color{blue} means the node is a parent, so don't visit.}}
+        \potrav{$\chi$};
+    }
+    \tcp{\color{blue}visit node}
+    
+    \ForAll{ \texttt{NODE} $\chi$ in $\root.\nei$}{
+        $\root.\size \gets \root.\size + \chi.\size$; \tcp{\color{blue}one of the nodes is going to be the parent, but since it hasn't been visited yet, its field \texttt{size} will be 0, so this is an accurate calculation of the size.}
+    }
+    $\root.\ten \gets \max \{\max_{i \in \root.\nei} \{i.\size\}, n - \root.\size\} $;\\ 
+    \Return; 
+  } \tcp{\color{red}--- Driver code ---}
+ \tcp{\color{blue} add fields to each node.}
+       \ForAll{$i \in \Omega$}{      
+       $\temp \gets i.\nei;$\\ 
+      $i \gets new \texttt{ struct } \texttt{NODE}$;\\  
+      $i.\visited \gets \false;$\\ 
+      $i.\nei \gets \temp ;$\\ 
+      $i.\ten \gets 0;$\\ 
+      $i.\size \gets 0;$
+    }
+    \tcp{\color{blue} find a node that's not a leaf and initialize it as root.}
+    \ForAll{$i \in \Omega $}{
+      \If{$|i.\nei| >1$}{
+      $\toproot \gets i;$\\ 
+      \exit;
+      }
+    }
+    \tcp{\color{blue} call the traversal at the top root}
+    $\potrav(\toproot)$;\\
+    $\temp \gets \infty ;$\\ 
+    \For{all $i\in \Omega$}{
+      \If{$i.\ten < \temp$}{
+        $\temp \gets i.\ten$;
+      }
+    }
+    \Return $\temp;$
+    \end{algorithm}
 
 \end{enumerate}
 \end{document}

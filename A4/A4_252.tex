@@ -114,7 +114,93 @@
 \thispagestyle{empty} %clear first page numbering
 %\coffeestainA{0.9}{0.85}{-25}{5cm}{1.3cm}
 \begin{enumerate}
-  \item \textsc{Browsing the small elements in a red-black tree}.
+  \item \textsc{Browsing the small elements in a red-black tree}. Given is an ordinary red-black tree with a pointer to the smallest element (in addition to a pointer to the root). Cells have five components: left, right, and parent pointers, color of the node, and value of the key.
+\begin{enumerate}
+  \item We are asked to search for an element u in the tree with key key [u] = x. Show that this can
+be done in time $O(1 + \log(k))$ if $x$ is the $k$-th smallest key value stored in the tree (but we only know $x$, not $k$).
+\sol
+Given a red black tree, we have a balanced binary tree. This means that we can find any element in the RB tree in $\log_2(n)$ time. This also means that we have at most $\lceil \log_2(n)\rceil$ levels to our tree. 
+
+Therefore, starting at the smallest node, we work our way up the RB tree by checking if the key of the node we are at is samller than the node we are looking for (x). We keep doing this until we find a node that has a key that is bigger than the key we are looking for, or we reach a node that does not have a parent nodes (the root). 
+
+
+Denote the lowest common ancestor as the node that is ancestor to the $k^{th}$ smallest node and the smallest node (our starting point). Given that our nodes are ordered in a red black tree, the possible lowest common ancestors (we will refer to them as LCAs from now on) would be found as the most left nodes of the tree at each level. Denote the possible LCAs
+\begin{align*}
+    LCA = \{v_1, v_2, \ldots, v_{n}\}
+\end{align*}
+By the red black tree, we have $\log(n)$ possible LCAs since the tree has n nodes. We, however, will not always reach the root, which is why our complexity is dependent on the $k^{th}$ smallest element rather than $n$. 
+
+By our algorithm, we move to the parent as long as the element we are looking for is bigger than the parent of the node we are currently at. Once we reach the point where the $k^{th}$ smallest element is smaller than the parent node, or the parent node does not exist (the root), we conclude that the element we are searching for must be in the right subtree of the node we are at. 
+
+The $k^{th}$ smallest element in the binary tree can be any element in the right subtree including the current node for the sake of simplicity. Suppose that our LCA is $v_i$. Since the node that contains $k$ is in the right subtree, and the subtree with $v_i$ as the LCA would have at most $2k$ elements inside. 
+
+This is easy to see since the lower bound for the number of leaves in the $v_i$ would be $2k$ (in big Oh) if $key[v_i] = k$, then the left subtree would have $k-1$ elements since that is the number of elements smaller than the node we are looking for, and the right subtree would have at most $k-1$ nodes as well. Suppose that $k$ was farther inside the right subtree, $k$ would be bigger than in the previous case, we could take without loss of generality that the $v_i$ subtree has $2k$ nodes (even though it would have less, since the left subtree wouldn't have k nodes in it) which would give us the same $O(\log(k))$, since the number of levels in this red black $v_i$ subtree is $\lceil \log_2 k \rceil$. 
+
+
+The second while loop essentially binary searches the right subtree of our LCA $v_i$, which has at most $k$ many nodes in it. Since it takes $O(\log k )$ to binary search a red black tree, this while loop also has $O(\log k)$.
+
+Thus, employing the triangle inequality with this distance metric, we have that 
+\begin{align*}
+    &d(\text{min pt, } k^{th}) \le d(\text{min pt, greatest common ancestor}) + d(\text{greatest common ancestor, } k^{th}) + 1\\
+    &\implies d(\text{min pt, } k^{th}) \le O(\log k + 1) + O(\log k) = O(\log k + 1)\\    
+\end{align*}
+
+The constant in our big Oh notation stems from the possibility that $k=1$, where $\log k = 0$, but there is still a comparison, so we add the 1. 
+
+  \item[\it (ii)] Give the algorithm for part (i).
+
+\begin{algorithm} 
+    \caption{Find\_kth\_smallest red-black tree.}
+    \SetKwProg{Fn}{Function }{\string:}{}
+    \SetKwRepeat{Do}{do}{while} %do-while loop macro
+    \SetKwInput{KwOut}{Output}
+    \SetKwInput{KwIn}{Input}
+    \SetKwFunction{rad}{Radius}
+    \SetKwFunction{cen}{centre\_dist}
+    \SetKwData{dec}{possible\_adjacent\_stack}
+    \SetKwData{a}{a}
+    \SetKwData{b}{b}
+    \SetKwData{np}{node\_pointer}    
+    \SetKwData{ltok}{left\_to\_circle}   
+    \SetKwData{maxd}{max\_d}   
+    \SetKwData{null}{NULL}  
+    \SetKwData{wid}{Width}   
+    \SetKwFunction{mn}{MAKENULL}
+    \SetKwFunction{top}{PEEK}
+    \SetKwFunction{pop}{POP}
+    \SetKwFunction{push}{PUSH}
+
+    \KwIn{Pointers to the smallest element and root of a red black tree, and value of $x$. }
+    \KwOut{Finds node of value $x$ in the tree.}
+    \BlankLine
+    \While{$(x \geq \text{key}[\np])$}{
+        \If{$\text{key}[\np] = x$}{
+             \Return $\np$;
+        }
+        \eIf{$(\text{key}[\text{parent}[\np]] \neq \null)$}{
+            $\np \gets \text{parent}[\np]$;
+        }{
+        \textbf{break};
+        }
+   }    
+    $\np \gets \text{right}[\text{left}[\np]]$ \tcp{\color{blue}The parent was bigger than $x$, thus we go back in the subtree and set our pointer to the right child}
+    
+    \While{$(x \neq \text{key}[\np]) \land (\text{key}[\np] \neq \null)$}{
+        \eIf{$x > \text{key}[\np]$}{
+            $\np \gets \text{right}[\np];$
+        }{
+        $\np \gets \text{left}[\np];$
+        }
+    }
+    
+    \eIf{$x = \text{key}[\np]$}{
+      \Return $\np$;
+    }{
+       \Return \null;
+    }
+    
+\end{algorithm}
+\end{enumerate}
   \newpage 
   \item \textsc{Greedy algorithm}. On a flat table, we have placed n disks of radii $r_1, ..., r_n$, numbered from left to right. We push them together without creating overlap, as in the figure below. Give an $O(n)$ time algorithm to compute the size of the smallest axis-aligned rectangle that can hold the disks.
   \sol 

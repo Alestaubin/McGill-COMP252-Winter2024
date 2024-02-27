@@ -20,7 +20,7 @@
 \newcommand{\nametwo}{ and Jonathan Campana}
 %images
 \usepackage{graphicx}
-\graphicspath{ {./images/} }
+\graphicspath{ {./graphics/} }
 % to include an image, do: 
 %    \begin{center}
 %    \includegraphics[scale=0.20]{graph.jpg}
@@ -205,6 +205,12 @@ The constant in our big Oh notation stems from the possibility that $k=1$, where
   \item \textsc{Greedy algorithm}. On a flat table, we have placed n disks of radii $r_1, ..., r_n$, numbered from left to right. We push them together without creating overlap, as in the figure below. Give an $O(n)$ time algorithm to compute the size of the smallest axis-aligned rectangle that can hold the disks.
   \sol 
   See the algorithm on the next page. We show that its complexity is $O(n)$. To begin, the outermost loop at line 8 iterates a total of $n$ times. The maximum number of elements pushed onto the stack is also $n$ (since at most one is pushed at each iteration), hence an equal number is removed, maintaining the overall $O(n)$ complexity. Finally, as we traverse through each circle once more at the end of the algorithm, the complexity remains $O(n)$.
+\begin{figure}
+     \centering
+     \includegraphics[scale=0.20]{A4-252.jpg}
+     \caption{The distance calculated by \texttt{centre\_dist()} in \textbf{Algorithm 2}.} 
+\end{figure}
+
   \begin{algorithm}
     \caption{Greedy circle packing}
     \SetKwProg{Fn}{Function }{\string:}{}
@@ -368,6 +374,7 @@ The algorithm uses the following data structure,
     \tcp{\color{blue} call the traversal at the top root}
     $\potrav(\toproot)$;\\
     $\temp \gets \infty ;$\\ 
+    \tcp{\color{blue}find the node of minimum tension}
     \For{all $i\in \Omega$}{
       \If{$i.\ten < \temp$}{
         $\temp \gets i.\ten$;
